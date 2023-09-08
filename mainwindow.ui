@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>813</width>
+    <width>842</width>
     <height>609</height>
    </rect>
   </property>
@@ -141,7 +141,7 @@
          </sizepolicy>
         </property>
         <property name="currentIndex">
-         <number>5</number>
+         <number>2</number>
         </property>
         <widget class="QWidget" name="page_no_data">
          <widget class="QPushButton" name="pushButton_load_csv_data">
@@ -224,7 +224,7 @@
             <item>
              <widget class="QCheckBox" name="checkBox_histogram">
               <property name="text">
-               <string>CheckBox</string>
+               <string>Show Normal Distribution Curve</string>
               </property>
              </widget>
             </item>
@@ -523,40 +523,270 @@
          </layout>
         </widget>
         <widget class="QWidget" name="page_clustering">
-         <widget class="QLabel" name="label_5">
-          <property name="geometry">
-           <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>600</width>
-            <height>20</height>
-           </rect>
-          </property>
-          <property name="text">
-           <string>Clustering</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
+         <layout class="QVBoxLayout" name="verticalLayout_6">
+          <item>
+           <widget class="QLabel" name="label_5">
+            <property name="text">
+             <string>Clustering</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_8">
+            <item>
+             <widget class="QLabel" name="label_24">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>Cols</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="MultiSelectComboBox" name="comboBox_clustering_columns">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="label_21">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>Algo</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QComboBox" name="comboBox_clustering_algorithm">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="currentIndex">
+               <number>0</number>
+              </property>
+              <item>
+               <property name="text">
+                <string>K-Means</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>DBSCAN</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Spectral</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Mean-Shift</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="label_22">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>num clusters</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QSpinBox" name="spinBox_num_clusters">
+              <property name="minimum">
+               <number>2</number>
+              </property>
+              <property name="maximum">
+               <number>20</number>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="label_23">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string> dim</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QComboBox" name="comboBox_clustering_dim">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <item>
+               <property name="text">
+                <string>2</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>3</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <widget class="QChartView" name="cluster2d"/>
+          </item>
+          <item>
+           <layout class="QVBoxLayout" name="cluster3d"/>
+          </item>
+          <item>
+           <widget class="LegendWidget" name="cluster_legends" native="true"/>
+          </item>
+         </layout>
         </widget>
         <widget class="QWidget" name="page_causal_analysis">
-         <widget class="QLabel" name="label_6">
-          <property name="geometry">
-           <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>600</width>
-            <height>20</height>
-           </rect>
-          </property>
-          <property name="text">
-           <string>Causal Analysis</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
+         <layout class="QVBoxLayout" name="verticalLayout_7">
+          <item>
+           <widget class="QLabel" name="label_6">
+            <property name="text">
+             <string>Causal Analysis</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_9">
+            <item>
+             <widget class="QLabel" name="label_25">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>Train/Test Split</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QComboBox" name="comboBox_causal_traintest">
+              <item>
+               <property name="text">
+                <string>90%/10%</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>80%/20%</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>70%/30%</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>50%/50%</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="label_26">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>Epochs</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QSpinBox" name="spinBox_causal_epoch">
+              <property name="value">
+               <number>50</number>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="label_27">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>Depth</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QSpinBox" name="spinBox_causal_depth"/>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_28">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>Train Progress</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QProgressBar" name="progressBar_causal">
+            <property name="value">
+             <number>24</number>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QChartView" name="causal_result"/>
+          </item>
+         </layout>
         </widget>
        </widget>
       </item>
@@ -569,7 +799,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>813</width>
+     <width>842</width>
      <height>38</height>
     </rect>
    </property>
@@ -614,6 +844,12 @@
    <class>HeatmapLegend</class>
    <extends>QWidget</extends>
    <header>heatmap_legend.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>LegendWidget</class>
+   <extends>QWidget</extends>
+   <header>legend.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

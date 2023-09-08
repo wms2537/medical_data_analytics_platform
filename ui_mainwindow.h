@@ -1,13 +1,13 @@
 /********************************************************************************
-** Form generated from reading UI file 'mainwindowMZiFzW.ui'
+** Form generated from reading UI file 'mainwindowcLdlND.ui'
 **
 ** Created by: Qt User Interface Compiler version 6.5.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
 
-#ifndef MAINWINDOWMZIFZW_H
-#define MAINWINDOWMZIFZW_H
+#ifndef MAINWINDOWCLDLND_H
+#define MAINWINDOWCLDLND_H
 
 #include <QtCharts/QChartView>
 #include <QtCore/QVariant>
@@ -22,6 +22,7 @@
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenu>
 #include <QtWidgets/QMenuBar>
+#include <QtWidgets/QProgressBar>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QSpinBox>
@@ -33,6 +34,7 @@
 #include "clickable_label.h"
 #include "heatmap_legend.h"
 #include "heatmap_widget.h"
+#include "legend.h"
 #include "multiselect_combobox.h"
 
 QT_BEGIN_NAMESPACE
@@ -111,9 +113,33 @@ public:
     QChartView *pca_chart;
     QVBoxLayout *pca_3d_layout;
     QWidget *page_clustering;
+    QVBoxLayout *verticalLayout_6;
     QLabel *label_5;
+    QHBoxLayout *horizontalLayout_8;
+    QLabel *label_24;
+    MultiSelectComboBox *comboBox_clustering_columns;
+    QLabel *label_21;
+    QComboBox *comboBox_clustering_algorithm;
+    QLabel *label_22;
+    QSpinBox *spinBox_num_clusters;
+    QLabel *label_23;
+    QComboBox *comboBox_clustering_dim;
+    QChartView *cluster2d;
+    QVBoxLayout *cluster3d;
+    LegendWidget *cluster_legends;
     QWidget *page_causal_analysis;
+    QVBoxLayout *verticalLayout_7;
     QLabel *label_6;
+    QHBoxLayout *horizontalLayout_9;
+    QLabel *label_25;
+    QComboBox *comboBox_causal_traintest;
+    QLabel *label_26;
+    QSpinBox *spinBox_causal_epoch;
+    QLabel *label_27;
+    QSpinBox *spinBox_causal_depth;
+    QLabel *label_28;
+    QProgressBar *progressBar_causal;
+    QChartView *causal_result;
     QMenuBar *menubar;
     QMenu *menuFile;
     QStatusBar *statusbar;
@@ -122,7 +148,7 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName("MainWindow");
-        MainWindow->resize(813, 609);
+        MainWindow->resize(842, 609);
         actionLoad = new QAction(MainWindow);
         actionLoad->setObjectName("actionLoad");
         centralwidget = new QWidget(MainWindow);
@@ -493,17 +519,174 @@ public:
         stackedWidget->addWidget(page_pca_analysis);
         page_clustering = new QWidget();
         page_clustering->setObjectName("page_clustering");
+        verticalLayout_6 = new QVBoxLayout(page_clustering);
+        verticalLayout_6->setObjectName("verticalLayout_6");
         label_5 = new QLabel(page_clustering);
         label_5->setObjectName("label_5");
-        label_5->setGeometry(QRect(0, 0, 600, 20));
         label_5->setAlignment(Qt::AlignCenter);
+
+        verticalLayout_6->addWidget(label_5);
+
+        horizontalLayout_8 = new QHBoxLayout();
+        horizontalLayout_8->setObjectName("horizontalLayout_8");
+        label_24 = new QLabel(page_clustering);
+        label_24->setObjectName("label_24");
+        sizePolicy3.setHeightForWidth(label_24->sizePolicy().hasHeightForWidth());
+        label_24->setSizePolicy(sizePolicy3);
+
+        horizontalLayout_8->addWidget(label_24);
+
+        comboBox_clustering_columns = new MultiSelectComboBox(page_clustering);
+        comboBox_clustering_columns->setObjectName("comboBox_clustering_columns");
+        sizePolicy.setHeightForWidth(comboBox_clustering_columns->sizePolicy().hasHeightForWidth());
+        comboBox_clustering_columns->setSizePolicy(sizePolicy);
+
+        horizontalLayout_8->addWidget(comboBox_clustering_columns);
+
+        label_21 = new QLabel(page_clustering);
+        label_21->setObjectName("label_21");
+        sizePolicy3.setHeightForWidth(label_21->sizePolicy().hasHeightForWidth());
+        label_21->setSizePolicy(sizePolicy3);
+
+        horizontalLayout_8->addWidget(label_21);
+
+        comboBox_clustering_algorithm = new QComboBox(page_clustering);
+        comboBox_clustering_algorithm->addItem(QString());
+        comboBox_clustering_algorithm->addItem(QString());
+        comboBox_clustering_algorithm->addItem(QString());
+        comboBox_clustering_algorithm->addItem(QString());
+        comboBox_clustering_algorithm->setObjectName("comboBox_clustering_algorithm");
+        sizePolicy1.setHeightForWidth(comboBox_clustering_algorithm->sizePolicy().hasHeightForWidth());
+        comboBox_clustering_algorithm->setSizePolicy(sizePolicy1);
+
+        horizontalLayout_8->addWidget(comboBox_clustering_algorithm);
+
+        label_22 = new QLabel(page_clustering);
+        label_22->setObjectName("label_22");
+        sizePolicy3.setHeightForWidth(label_22->sizePolicy().hasHeightForWidth());
+        label_22->setSizePolicy(sizePolicy3);
+
+        horizontalLayout_8->addWidget(label_22);
+
+        spinBox_num_clusters = new QSpinBox(page_clustering);
+        spinBox_num_clusters->setObjectName("spinBox_num_clusters");
+        spinBox_num_clusters->setMinimum(2);
+        spinBox_num_clusters->setMaximum(20);
+
+        horizontalLayout_8->addWidget(spinBox_num_clusters);
+
+        label_23 = new QLabel(page_clustering);
+        label_23->setObjectName("label_23");
+        sizePolicy3.setHeightForWidth(label_23->sizePolicy().hasHeightForWidth());
+        label_23->setSizePolicy(sizePolicy3);
+
+        horizontalLayout_8->addWidget(label_23);
+
+        comboBox_clustering_dim = new QComboBox(page_clustering);
+        comboBox_clustering_dim->addItem(QString());
+        comboBox_clustering_dim->addItem(QString());
+        comboBox_clustering_dim->setObjectName("comboBox_clustering_dim");
+        QSizePolicy sizePolicy6(QSizePolicy::Minimum, QSizePolicy::Fixed);
+        sizePolicy6.setHorizontalStretch(0);
+        sizePolicy6.setVerticalStretch(0);
+        sizePolicy6.setHeightForWidth(comboBox_clustering_dim->sizePolicy().hasHeightForWidth());
+        comboBox_clustering_dim->setSizePolicy(sizePolicy6);
+
+        horizontalLayout_8->addWidget(comboBox_clustering_dim);
+
+
+        verticalLayout_6->addLayout(horizontalLayout_8);
+
+        cluster2d = new QChartView(page_clustering);
+        cluster2d->setObjectName("cluster2d");
+
+        verticalLayout_6->addWidget(cluster2d);
+
+        cluster3d = new QVBoxLayout();
+        cluster3d->setObjectName("cluster3d");
+
+        verticalLayout_6->addLayout(cluster3d);
+
+        cluster_legends = new LegendWidget(page_clustering);
+        cluster_legends->setObjectName("cluster_legends");
+
+        verticalLayout_6->addWidget(cluster_legends);
+
         stackedWidget->addWidget(page_clustering);
         page_causal_analysis = new QWidget();
         page_causal_analysis->setObjectName("page_causal_analysis");
+        verticalLayout_7 = new QVBoxLayout(page_causal_analysis);
+        verticalLayout_7->setObjectName("verticalLayout_7");
         label_6 = new QLabel(page_causal_analysis);
         label_6->setObjectName("label_6");
-        label_6->setGeometry(QRect(0, 0, 600, 20));
         label_6->setAlignment(Qt::AlignCenter);
+
+        verticalLayout_7->addWidget(label_6);
+
+        horizontalLayout_9 = new QHBoxLayout();
+        horizontalLayout_9->setObjectName("horizontalLayout_9");
+        label_25 = new QLabel(page_causal_analysis);
+        label_25->setObjectName("label_25");
+        sizePolicy3.setHeightForWidth(label_25->sizePolicy().hasHeightForWidth());
+        label_25->setSizePolicy(sizePolicy3);
+
+        horizontalLayout_9->addWidget(label_25);
+
+        comboBox_causal_traintest = new QComboBox(page_causal_analysis);
+        comboBox_causal_traintest->addItem(QString());
+        comboBox_causal_traintest->addItem(QString());
+        comboBox_causal_traintest->addItem(QString());
+        comboBox_causal_traintest->addItem(QString());
+        comboBox_causal_traintest->setObjectName("comboBox_causal_traintest");
+
+        horizontalLayout_9->addWidget(comboBox_causal_traintest);
+
+        label_26 = new QLabel(page_causal_analysis);
+        label_26->setObjectName("label_26");
+        sizePolicy3.setHeightForWidth(label_26->sizePolicy().hasHeightForWidth());
+        label_26->setSizePolicy(sizePolicy3);
+
+        horizontalLayout_9->addWidget(label_26);
+
+        spinBox_causal_epoch = new QSpinBox(page_causal_analysis);
+        spinBox_causal_epoch->setObjectName("spinBox_causal_epoch");
+        spinBox_causal_epoch->setValue(50);
+
+        horizontalLayout_9->addWidget(spinBox_causal_epoch);
+
+        label_27 = new QLabel(page_causal_analysis);
+        label_27->setObjectName("label_27");
+        sizePolicy3.setHeightForWidth(label_27->sizePolicy().hasHeightForWidth());
+        label_27->setSizePolicy(sizePolicy3);
+
+        horizontalLayout_9->addWidget(label_27);
+
+        spinBox_causal_depth = new QSpinBox(page_causal_analysis);
+        spinBox_causal_depth->setObjectName("spinBox_causal_depth");
+
+        horizontalLayout_9->addWidget(spinBox_causal_depth);
+
+
+        verticalLayout_7->addLayout(horizontalLayout_9);
+
+        label_28 = new QLabel(page_causal_analysis);
+        label_28->setObjectName("label_28");
+        sizePolicy.setHeightForWidth(label_28->sizePolicy().hasHeightForWidth());
+        label_28->setSizePolicy(sizePolicy);
+
+        verticalLayout_7->addWidget(label_28);
+
+        progressBar_causal = new QProgressBar(page_causal_analysis);
+        progressBar_causal->setObjectName("progressBar_causal");
+        progressBar_causal->setValue(24);
+
+        verticalLayout_7->addWidget(progressBar_causal);
+
+        causal_result = new QChartView(page_causal_analysis);
+        causal_result->setObjectName("causal_result");
+
+        verticalLayout_7->addWidget(causal_result);
+
         stackedWidget->addWidget(page_causal_analysis);
 
         horizontalLayout->addWidget(stackedWidget);
@@ -514,7 +697,7 @@ public:
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName("menubar");
-        menubar->setGeometry(QRect(0, 0, 813, 38));
+        menubar->setGeometry(QRect(0, 0, 842, 38));
         menuFile = new QMenu(menubar);
         menuFile->setObjectName("menuFile");
         MainWindow->setMenuBar(menubar);
@@ -527,7 +710,8 @@ public:
 
         retranslateUi(MainWindow);
 
-        stackedWidget->setCurrentIndex(5);
+        stackedWidget->setCurrentIndex(2);
+        comboBox_clustering_algorithm->setCurrentIndex(0);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -550,7 +734,7 @@ public:
         label_7->setText(QCoreApplication::translate("MainWindow", "Raw Data View", nullptr));
         label_11->setText(QCoreApplication::translate("MainWindow", "Histogram", nullptr));
         label_8->setText(QCoreApplication::translate("MainWindow", "Column", nullptr));
-        checkBox_histogram->setText(QCoreApplication::translate("MainWindow", "CheckBox", nullptr));
+        checkBox_histogram->setText(QCoreApplication::translate("MainWindow", "Show Normal Distribution Curve", nullptr));
         label_10->setText(QCoreApplication::translate("MainWindow", "Scatter Plot", nullptr));
         label_9->setText(QCoreApplication::translate("MainWindow", "x-axis", nullptr));
         label_12->setText(QCoreApplication::translate("MainWindow", "y-axis", nullptr));
@@ -574,7 +758,28 @@ public:
         comboBox_pca_dims->setItemText(1, QCoreApplication::translate("MainWindow", "3", nullptr));
 
         label_5->setText(QCoreApplication::translate("MainWindow", "Clustering", nullptr));
+        label_24->setText(QCoreApplication::translate("MainWindow", "Cols", nullptr));
+        label_21->setText(QCoreApplication::translate("MainWindow", "Algo", nullptr));
+        comboBox_clustering_algorithm->setItemText(0, QCoreApplication::translate("MainWindow", "K-Means", nullptr));
+        comboBox_clustering_algorithm->setItemText(1, QCoreApplication::translate("MainWindow", "DBSCAN", nullptr));
+        comboBox_clustering_algorithm->setItemText(2, QCoreApplication::translate("MainWindow", "Spectral", nullptr));
+        comboBox_clustering_algorithm->setItemText(3, QCoreApplication::translate("MainWindow", "Mean-Shift", nullptr));
+
+        label_22->setText(QCoreApplication::translate("MainWindow", "num clusters", nullptr));
+        label_23->setText(QCoreApplication::translate("MainWindow", " dim", nullptr));
+        comboBox_clustering_dim->setItemText(0, QCoreApplication::translate("MainWindow", "2", nullptr));
+        comboBox_clustering_dim->setItemText(1, QCoreApplication::translate("MainWindow", "3", nullptr));
+
         label_6->setText(QCoreApplication::translate("MainWindow", "Causal Analysis", nullptr));
+        label_25->setText(QCoreApplication::translate("MainWindow", "Train/Test Split", nullptr));
+        comboBox_causal_traintest->setItemText(0, QCoreApplication::translate("MainWindow", "90%/10%", nullptr));
+        comboBox_causal_traintest->setItemText(1, QCoreApplication::translate("MainWindow", "80%/20%", nullptr));
+        comboBox_causal_traintest->setItemText(2, QCoreApplication::translate("MainWindow", "70%/30%", nullptr));
+        comboBox_causal_traintest->setItemText(3, QCoreApplication::translate("MainWindow", "50%/50%", nullptr));
+
+        label_26->setText(QCoreApplication::translate("MainWindow", "Epochs", nullptr));
+        label_27->setText(QCoreApplication::translate("MainWindow", "Depth", nullptr));
+        label_28->setText(QCoreApplication::translate("MainWindow", "Train Progress", nullptr));
         menuFile->setTitle(QCoreApplication::translate("MainWindow", "File", nullptr));
     } // retranslateUi
 
@@ -586,4 +791,4 @@ namespace Ui {
 
 QT_END_NAMESPACE
 
-#endif // MAINWINDOWMZIFZW_H
+#endif // MAINWINDOWCLDLND_H

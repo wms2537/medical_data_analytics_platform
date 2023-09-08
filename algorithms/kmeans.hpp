@@ -3,8 +3,7 @@
 
 #include "common.h"
 
-std::tuple<Eigen::MatrixXf, std::vector<int>>
-clusterKMeans(const std::vector<std::vector<float>> &in, const int k, const int maxIter)
+inline std::vector<int> clusterKMeans(const std::vector<std::vector<float>>& in, const int k, const int maxIter)
 {
     if (in.empty())
     {
@@ -42,7 +41,7 @@ clusterKMeans(const std::vector<std::vector<float>> &in, const int k, const int 
     std::vector<int> counts(k);
     std::vector<int> oldLabels(row);
 
-    // init centers
+    // Initialize centers randomly
     for (int i = 0; i < k; i++)
     {
         int idx = rand() % row;
@@ -55,24 +54,14 @@ clusterKMeans(const std::vector<std::vector<float>> &in, const int k, const int 
     int iter = 0;
     while (iter < maxIter)
     {
-        // assign labels
+        // Assign labels
         for (int i = 0; i < row; i++)
         {
-            float minDist = std::numeric_limits<float>::max();
-            int minIdx = -1;
-            for (int j = 0; j < k; j++)
-            {
-                float dist = (mat.row(i) - centers.row(j)).norm();
-                if (dist < minDist)
-                {
-                    minDist = dist;
-                    minIdx = j;
-                }
-            }
-            labels[i] = minIdx;
+            Eigen::VectorXf distances = (mat.row(i).replicate(k, 1) - centers).rowwise().norm();
+            labels[i] = static_cast<int>((distances.minCoeff(&labels[i]), labels[i])); // Find the index of the minimum value
         }
 
-        // update centers
+        // Update centers
         centers.setZero();
         counts.assign(k, 0);
         for (int i = 0; i < row; i++)
@@ -84,46 +73,47 @@ clusterKMeans(const std::vector<std::vector<float>> &in, const int k, const int 
         {
             if (counts[i] > 0)
             {
-                centers.row(i) /= float(counts[i]);
+                centers.row(i) /= static_cast<float>(counts[i]);
             }
         }
         ++iter;
-
     }
-    return { centers, labels };
+
+    return labels;
 }
 
-std::tuple<Eigen::MatrixXf, std::vector<int>>
+
+inline std::vector<int>
 clusterKMeans(const std::vector<std::vector<float>> &in, const int k)
 {
     return clusterKMeans(in, k, 100);
 }
 
-void testCluster()
-{
-    std::vector<std::vector<float>> points = {
-        {1, 2},
-        {2, 1},
-        {3, 1},
-        {5, 4},
-        {5, 5},
-        {6, 5},
-        {10, 8},
-        {7, 9},
-        {11, 5},
-        {14, 9},
-        {14, 14},
-        {15, 11}
-    };
+// void testCluster()
+// {
+//     std::vector<std::vector<float>> points = {
+//         {1, 2},
+//         {2, 1},
+//         {3, 1},
+//         {5, 4},
+//         {5, 5},
+//         {6, 5},
+//         {10, 8},
+//         {7, 9},
+//         {11, 5},
+//         {14, 9},
+//         {14, 14},
+//         {15, 11}
+//     };
 
-    auto res = clusterKMeans(points, 3);
-    std::cout << "centers: \n" << std::get<0>(res) << std::endl;
-    std::cout << "labels: \n";
-    for (auto &label : std::get<1>(res))
-    {
-        std::cout << label << " ";
-    }
-    std::cout << std::endl;
-}
+//     auto res = clusterKMeans(points, 3);
+//     std::cout << "centers: \n" << std::get<0>(res) << std::endl;
+//     std::cout << "labels: \n";
+//     for (auto &label : std::get<1>(res))
+//     {
+//         std::cout << label << " ";
+//     }
+//     std::cout << std::endl;
+// }
 
 #endif // KMENAS_HPP

@@ -9,6 +9,11 @@
 #include "algorithms/leastsquare.hpp"
 #include "algorithms/covariance.hpp"
 #include "algorithms/pca.hpp"
+#include "algorithms/kmeans.hpp"
+#include "algorithms/dbscan.hpp"
+#include "algorithms/spectral.hpp"
+#include "algorithms/mean_shift.hpp"
+#include "algorithms/normalise.hpp"
 
 using namespace std;
 
@@ -18,6 +23,13 @@ struct MeanStdResult
     std::string columnName;
     float mean;
     float variance;
+};
+
+enum ClusteringAlgorithm {
+    K_Means,
+    DBSCAN,
+    Spectral,
+    MeanShift
 };
 
 class CSVReader
@@ -67,9 +79,17 @@ public:
                     headersLoaded = true;
                     continue;
                 }
+                row.push_back(0.0);
+                row.push_back(0.0);
+                row.push_back(0.0);
+                row.push_back(0.0);
                 content.push_back(row);
             }
         }
+        clustering(ClusteringAlgorithm::K_Means, {1, 2, 3, 4, 5}, 2);
+        clustering(ClusteringAlgorithm::DBSCAN, {1, 2, 3, 4, 5}, 2);
+        clustering(ClusteringAlgorithm::Spectral, {1, 2, 3, 4, 5}, 2);
+        clustering(ClusteringAlgorithm::MeanShift, {1, 2, 3, 4, 5}, 2);
     }
     vector<vector<float>> getContent()
     {
@@ -186,7 +206,6 @@ public:
             inMat.push_back(temp);
         }
         auto res = pca(inMat, dim);
-        std::cout << "res: \n" << res << std::endl;
         vector<vector<float>> result;
         // float min = 0, max = 0;
         for (int i = 0; i < content.size(); i++)
@@ -203,5 +222,52 @@ public:
             result.push_back(temp);
         }
         return result;
+    }
+    vector<int> clustering(ClusteringAlgorithm algo, vector<int> cols, int k) {
+        vector<vector<float>> inMat;
+        for (auto row : content)
+        {
+            vector<float> temp;
+            for (auto col : cols)
+            {
+                temp.push_back(row[col+1]);
+            }
+            inMat.push_back(temp);
+        }
+        vector<int> res;
+        switch (algo)
+        {
+        case ClusteringAlgorithm::K_Means:
+            res = clusterKMeans(normalizeData(inMat), k);
+            for (int i = 0; i < content.size(); i++)
+            {
+                content[i][headers.size()] = res[i];
+            }
+            break;
+        case ClusteringAlgorithm::DBSCAN:
+            res = dbscanClustering(normalizeData(inMat), 0.1, 2);
+            for (int i = 0; i < content.size(); i++)
+            {
+                content[i][headers.size()+1] = res[i];
+            }
+            break;
+        case ClusteringAlgorithm::Spectral:
+            res = spectralClustering(normalizeData(inMat), k, 0.5, 2);
+            for (int i = 0; i < content.size(); i++)
+            {
+                content[i][headers.size()+2] = res[i];
+            }
+            break;
+        case ClusteringAlgorithm::MeanShift:
+            res = meanShiftClustering(normalizeData(inMat), 0.5);
+            for (int i = 0; i < content.size(); i++)
+            {
+                content[i][headers.size()+3] = res[i];
+            }
+            break;
+        default:
+            break;
+        }
+        return res;
     }
 };

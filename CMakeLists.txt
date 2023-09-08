@@ -21,6 +21,7 @@ qt_add_executable(main
     multiselect_combobox.cpp
     heatmap_widget.cpp
     heatmap_legend.cpp
+    legend.cpp
     main.cpp
 )
 

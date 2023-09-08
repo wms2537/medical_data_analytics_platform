@@ -9,6 +9,7 @@
 #include <QCategoryAxis>
 #include <QScatterSeries>
 #include <Q3DScatter>
+#include <QLegendMarker>
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
                                           ui(new Ui::MainWindow)
@@ -16,9 +17,21 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     ui->setupUi(this);
     pageIndex = 0;
     ui->stackedWidget->setCurrentIndex(pageIndex);
-    csvReader.loadFile("/Users/sohweimeng/Documents/cpp_dev/medical_data_analytics_platform/breast-cancer.csv");
-    initialiseGraphs();
+    // csvReader.loadFile("/Users/sohweimeng/Documents/cpp_dev/medical_data_analytics_platform/breast-cancer.csv");
+    // initialiseGraphs();
     connect(ui->actionLoad, &QAction::triggered, this, [=]
+            {
+                fileLoaded = false;
+        QString filename = QFileDialog::getOpenFileName( 
+        this, 
+        tr("Load CSV"), 
+        QDir::currentPath(), 
+        tr("CSV files (*.csv)") );
+        csvReader.loadFile(filename.toStdString());
+                initialiseGraphs();
+                fileLoaded = true; });
+
+    connect(ui->pushButton_load_csv_data, &QPushButton::clicked, this, [=]
             {
         QString filename = QFileDialog::getOpenFileName( 
         this, 
@@ -26,18 +39,20 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
         QDir::currentPath(), 
         tr("CSV files (*.csv)") );
         csvReader.loadFile(filename.toStdString());
-                initialiseGraphs(); });
-
+                initialiseGraphs();
+                fileLoaded = true; });
     connect(ui->tableWidget->horizontalHeader(), SIGNAL(sectionClicked(int)), this, SLOT(generateColumnMeanStd(int)));
 
     connect(ui->comboBox_histogram, &QComboBox::currentIndexChanged, this, [=](int index)
-            { histogramIndex = index;
+            { if(!fileLoaded) return;
+                histogramIndex = index;
             createHistogram(ui->checkBox_histogram->isChecked()); });
     connect(ui->checkBox_histogram, &QCheckBox::stateChanged, this, [=](int state)
             { createHistogram(ui->checkBox_histogram->isChecked()); });
 
     connect(ui->comboBox_scatter_x, &QComboBox::currentIndexChanged, this, [=](int index)
             { 
+                if(!fileLoaded) return;
                 if(index == scatterYIndex) {
                     QMessageBox::warning(this, "Error", "X axis and Y axis cannot be the same column.");
                     return;
@@ -46,6 +61,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
             createScatter(); });
     connect(ui->comboBox_scatter_y, &QComboBox::currentIndexChanged, this, [=](int index)
             { 
+                if(!fileLoaded) return;
                 if(index == scatterXIndex) {
                     QMessageBox::warning(this, "Error", "Y axis and X axis cannot be the same column.");
                     return;
@@ -58,14 +74,33 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
         createScatter(); });
 
     connect(ui->comboBox_correlation_type, &QComboBox::currentIndexChanged, this, [=](int index)
-            { createCorrelationMatrix(); });
+            { if(!fileLoaded) return;
+                createCorrelationMatrix(); });
     connect(ui->comboBox_correlation_columns, &MultiSelectComboBox::selectionChanged, this, [=]
-            { createCorrelationMatrix(); });
+            { if(!fileLoaded) return;
+                createCorrelationMatrix(); });
 
     connect(ui->comboBox_pca_columns, &MultiSelectComboBox::selectionChanged, this, [=]
-            { createPca(); });
+            { if(!fileLoaded) return;
+                createPca(); });
     connect(ui->comboBox_pca_dims, &QComboBox::currentIndexChanged, this, [=](int index)
-            { createPca(); });
+            { if(!fileLoaded) return;
+                createPca(); });
+
+    connect(ui->comboBox_clustering_columns, &MultiSelectComboBox::selectionChanged, this, [=]
+            { if(!fileLoaded) return;
+                createClustering(); });
+    connect(ui->comboBox_clustering_algorithm, &QComboBox::currentIndexChanged, this, [=](int index)
+            { if(!fileLoaded) return;
+                createClustering(); });
+    connect(ui->comboBox_clustering_dim, &QComboBox::currentIndexChanged, this, [=](int index)
+            { if(!fileLoaded) return;
+                createClustering(); });
+    connect(ui->spinBox_num_clusters, &QSpinBox::valueChanged, this, [=](int val)
+            {
+        if(!fileLoaded) return;
+        num_clusters = val;
+        createClustering(); });
 
     connect(ui->label_menu_raw_data_view, &ClickableLabel::clicked, [=]
             { 
@@ -151,11 +186,13 @@ void MainWindow::initialiseGraphs()
         if (h.compare("diagnosis") == 0)
             continue;
         ui->comboBox_pca_columns->addItem(QString::fromStdString(h));
+        ui->comboBox_clustering_columns->addItem(QString::fromStdString(h));
     }
     for (int i = 0; i < 5; i++)
     {
         ui->comboBox_correlation_columns->setSelected(i, true);
         ui->comboBox_pca_columns->setSelected(i, true);
+        ui->comboBox_clustering_columns->setSelected(i, true);
     }
 
     ui->comboBox_scatter_y->setCurrentIndex(scatterYIndex);
@@ -164,6 +201,10 @@ void MainWindow::initialiseGraphs()
     createScatter();
     createCorrelationMatrix();
     createPca();
+    createClustering();
+
+    pageIndex = 1;
+    ui->stackedWidget->setCurrentIndex(pageIndex);
 }
 
 void MainWindow::createRawDataView()
@@ -184,6 +225,10 @@ void MainWindow::createRawDataView()
     {
         headerLabels.push_back(QString::fromStdString(h));
     }
+    headerLabels.push_back("KMeans");
+    headerLabels.push_back("DBSCAN");
+    headerLabels.push_back("Spectral");
+    headerLabels.push_back("Mean Shift");
 
     ui->tableWidget->setHorizontalHeaderLabels(headerLabels);
     ui->tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
@@ -339,7 +384,7 @@ void MainWindow::createScatter()
         }
         if (y < 0)
             continue;
-        std::cout << x << " " << y << endl;
+        // std::cout << x << " " << y << endl;
         lineseries->append(QPointF(x, y));
         if (lineseries->points().size() == scatter_power)
             break;
@@ -349,8 +394,8 @@ void MainWindow::createScatter()
     {
         y += std::get<0>(leastSqAndPR)[j] * std::pow(std::get<3>(leastSqAndPR).back(), j);
     }
-    std::cout << std::get<3>(leastSqAndPR).back() << " " << y << endl
-              << endl;
+    // std::cout << std::get<3>(leastSqAndPR).back() << " " << y << endl
+    //   << endl;
     lineseries->append(QPointF(std::get<3>(leastSqAndPR).back(), y));
     chart->addSeries(lineseries);
 
@@ -386,12 +431,12 @@ void MainWindow::createCorrelationMatrix()
 
     ui->correlation_matrix->setAxisLabels(axisLabels, axisLabels);
     auto res = csvReader.getCorrelationMatrix(selectedColumns, ui->comboBox_correlation_type->currentIndex() == 1);
-    for (auto row : std::get<0>(res))
-    {
-        for (auto e : row)
-            std::cout << e;
-        std::cout << endl;
-    }
+    // for (auto row : std::get<0>(res))
+    // {
+    // for (auto e : row)
+    // std::cout << e;
+    // std::cout << endl;
+    // }
 
     ui->correlation_matrix->setMinMax(std::get<1>(res), std::get<2>(res));
     ui->correlation_legend->setMinMax(std::get<1>(res), std::get<2>(res));
@@ -400,6 +445,12 @@ void MainWindow::createCorrelationMatrix()
 
 void MainWindow::createPca()
 {
+    if (ispca3d)
+    {
+        ui->pca_3d_layout->removeWidget(pca3d);
+        pca3d->deleteLater();
+        ispca3d = false;
+    }
     auto selectedColumns = ui->comboBox_pca_columns->getSelectedIndexes();
     if (ui->comboBox_pca_dims->currentIndex() == 0)
     {
@@ -439,7 +490,6 @@ void MainWindow::createPca()
         chart->setDropShadowEnabled(false);
         ui->pca_chart->setChart(chart);
         ui->pca_chart->show();
-        ui->pca_3d_layout->removeItem(ui->pca_3d_layout->itemAt(0));
     }
     else
     {
@@ -450,11 +500,11 @@ void MainWindow::createPca()
         QScatter3DSeries *seriesMalignant = new QScatter3DSeries;
         seriesMalignant->setName("Malignant");
         seriesMalignant->setBaseColor(QColor::fromRgb(255, 0, 0));
-        seriesMalignant->setItemSize(5);
+        seriesMalignant->setItemSize(0.1);
         QScatter3DSeries *seriesBenign = new QScatter3DSeries;
         seriesBenign->setName("Benign");
         seriesBenign->setBaseColor(QColor::fromRgb(0, 255, 0));
-        seriesBenign->setItemSize(5);
+        seriesBenign->setItemSize(0.1);
         for (int i = 0; i < res.size(); i++)
         {
             auto row = csvReader.getContent()[i];
@@ -481,6 +531,136 @@ void MainWindow::createPca()
         scatterWindow->setSizePolicy(sizePolicy);
         ui->pca_3d_layout->addWidget(scatterWindow);
         ui->pca_chart->hide();
+        pca3d = scatterWindow;
+        ispca3d = true;
+    }
+}
+
+void MainWindow::createClustering()
+{
+    std::cout << "1" << endl;
+    ui->cluster_legends->clear();
+    std::cout << "2" << endl;
+    if (iscluster3d)
+    {
+        ui->cluster3d->removeWidget(cluster3d);
+        cluster3d->deleteLater();
+        iscluster3d = false;
+    }
+    std::cout << "3" << endl;
+    auto selectedColumns = ui->comboBox_pca_columns->getSelectedIndexes();
+    vector<QColor> distinctColors = {
+        QColor::fromRgb(255, 0, 0),     // Red
+        QColor::fromRgb(0, 255, 0),     // Green
+        QColor::fromRgb(0, 0, 255),     // Blue
+        QColor::fromRgb(255, 255, 0),   // Yellow
+        QColor::fromRgb(255, 0, 255),   // Magenta
+        QColor::fromRgb(0, 255, 255),   // Cyan
+        QColor::fromRgb(128, 0, 0),     // Maroon
+        QColor::fromRgb(0, 128, 0),     // Olive
+        QColor::fromRgb(0, 0, 128),     // Navy
+        QColor::fromRgb(128, 128, 0),   // Olive Green
+        QColor::fromRgb(128, 0, 128),   // Purple
+        QColor::fromRgb(0, 128, 128),   // Teal
+        QColor::fromRgb(255, 165, 0),   // Orange
+        QColor::fromRgb(128, 128, 128), // Gray
+        QColor::fromRgb(255, 192, 203), // Pink
+        QColor::fromRgb(255, 140, 0),   // Dark Orange
+        QColor::fromRgb(0, 128, 128),   // Dark Cyan
+        QColor::fromRgb(139, 69, 19),   // Saddle Brown
+        QColor::fromRgb(0, 255, 127),   // Spring Green
+        QColor::fromRgb(218, 112, 214)  // Orchid
+    };
+
+    auto clusterRes = csvReader.clustering(static_cast<ClusteringAlgorithm>(ui->comboBox_clustering_algorithm->currentIndex()), selectedColumns, num_clusters);
+
+    if (ui->comboBox_clustering_dim->currentIndex() == 0)
+    {
+        std::cout << "4" << endl;
+        auto res = csvReader.getPca(selectedColumns, 2);
+
+        std::vector<QScatterSeries *> seriesList;
+
+        for (int i = 0; i < res.size(); i++)
+        {
+            auto row = csvReader.getContent()[i];
+            if (clusterRes[i] < 0)
+                continue;
+            while (clusterRes[i] >= seriesList.size())
+            {
+                auto myseries = new QScatterSeries;
+                myseries->setName(QString::number(seriesList.size() + 1));
+                myseries->setMarkerShape(QScatterSeries::MarkerShapeCircle);
+                myseries->setMarkerSize(5.0);
+                myseries->setColor(distinctColors[seriesList.size() % 20]);
+                seriesList.push_back(myseries);
+            }
+            seriesList[clusterRes[i]]->append(res[i][0], res[i][1]);
+        }
+        // connect(seriesMalignant, &QScatterSeries::clicked, this, [=](const QPointF &point)
+        //         { QMessageBox::about(this, "Malignant", "data"); });
+
+        auto chart = new QChart;
+        for (auto s : seriesList)
+        {
+            chart->addSeries(s);
+        }
+
+        ui->cluster_legends->assignChart(chart);
+        for (int i = 0; i < seriesList.size(); i++)
+        {
+            ui->cluster_legends->addSeries(seriesList[i], QString::number(i + 1));
+        }
+        chart->legend()->setVisible(false);
+
+        chart->createDefaultAxes();
+        chart->setDropShadowEnabled(false);
+        ui->cluster2d->setChart(chart);
+        ui->cluster2d->show();
+    }
+    else
+    {
+        auto res = csvReader.getPca(selectedColumns, 3);
+        Q3DScatter *scatter3d = new Q3DScatter();
+        scatter3d->setFlags(scatter3d->flags() ^ Qt::FramelessWindowHint);
+
+        std::vector<QScatter3DSeries *> seriesList;
+        for (int i = 0; i < res.size(); i++)
+        {
+            auto row = csvReader.getContent()[i];
+            if (clusterRes[i] < 0)
+                continue;
+            while (clusterRes[i] >= seriesList.size())
+            {
+                QScatter3DSeries *myseries = new QScatter3DSeries;
+                myseries->setName(QString::number(seriesList.size() + 1));
+                myseries->setItemSize(0.1);
+                myseries->setBaseColor(distinctColors[seriesList.size() % 20]);
+                seriesList.push_back(myseries);
+            }
+            seriesList[clusterRes[i]]->dataProxy()->addItem(QVector3D(res[i][0], res[i][1], res[i][2]));
+        }
+        ui->cluster_legends->assignChart(scatter3d);
+        for (size_t i = 0; i < seriesList.size(); i++)
+        {
+            scatter3d->addSeries(seriesList[i]);
+            ui->cluster_legends->addSeries(seriesList[i], QString::number(i + 1));
+        }
+
+        scatter3d->setAspectRatio(1.0);
+        scatter3d->setHorizontalAspectRatio(1.0);
+        scatter3d->setShadowQuality(QAbstract3DGraph::ShadowQualityNone);
+        QVBoxLayout *layout = new QVBoxLayout();
+        QWidget *scatterWindow = QWidget::createWindowContainer(scatter3d);
+        QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
+        sizePolicy.setHorizontalStretch(0);
+        sizePolicy.setVerticalStretch(0);
+        sizePolicy.setHeightForWidth(scatterWindow->sizePolicy().hasHeightForWidth());
+        scatterWindow->setSizePolicy(sizePolicy);
+        ui->cluster3d->addWidget(scatterWindow);
+        ui->cluster2d->hide();
+        cluster3d = scatterWindow;
+        iscluster3d = true;
     }
 }
 
@@ -488,7 +668,7 @@ void MainWindow::generateColumnMeanStd(int col)
 {
     MeanStdResult result = csvReader.getMeanStd(col);
     QMessageBox::warning(this, "Mean Var", ("Mean of column " + result.columnName + " is " + std::to_string(result.mean) + "\n\nVariance of column " + result.columnName + " is " + std::to_string(result.variance)).c_str());
-    std::cout << col;
+    // std::cout << col;
 }
 
 MainWindow::~MainWindow()

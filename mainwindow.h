@@ -3,6 +3,7 @@
 #include <QMainWindow>
 #include <vector>
 #include "csv_reader.h"
+#include <QWidget>
 
 namespace Ui
 {
@@ -24,12 +25,16 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+    QWidget* pca3d;
+    QWidget* cluster3d;
+    bool ispca3d = false, iscluster3d = false, fileLoaded = false;
     CSVReader csvReader;
     int pageIndex = 0,
         histogramIndex = 0,
         scatterXIndex = 0,
         scatterYIndex = 1,
-        scatter_power = 1;
+        scatter_power = 1,
+        num_clusters = 2;
     void resetMenuSelected();
     void initialiseGraphs();
     void createRawDataView();
@@ -37,6 +42,7 @@ private:
     void createScatter();
     void createCorrelationMatrix();
     void createPca();
+    void createClustering();
     // LoginDialog *loginDialog;
     // SignUpDialog *signUpDialog;
 };
