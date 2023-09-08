@@ -14,6 +14,7 @@
 #include "algorithms/spectral.hpp"
 #include "algorithms/mean_shift.hpp"
 #include "algorithms/normalise.hpp"
+#include "algorithms/xgboost_example.h"
 
 using namespace std;
 
@@ -268,6 +269,25 @@ public:
         default:
             break;
         }
+        return res;
+    }
+    tuple<vector<float>, float, float, float, vector<float>> trainModel(float trainRatio, int epochs, int depth, function<void(int)> epochCallback) {
+        vector<vector<float>> inMat;
+        vector<float> labels;
+        for (auto row : content)
+        {
+            vector<float> temp;
+            for (int i = 1; i < row.size()-4; i++)
+            {
+                if(i == 1) {
+                    labels.push_back(row[i]);
+                } else {
+                    temp.push_back(row[i]);
+                }
+            }
+            inMat.push_back(temp);
+        }
+        auto res = trainXgBoost(inMat, labels, trainRatio, epochs, depth, epochCallback);
         return res;
     }
 };

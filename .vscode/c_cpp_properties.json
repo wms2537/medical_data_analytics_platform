@@ -9,6 +9,7 @@
                 "/opt/homebrew/Cellar/qt/6.5.1_3/lib/QtWidgets.framework/Versions/A/Headers",
                 "/opt/homebrew/Cellar/qt/6.5.1_3/lib/QtCharts.framework/Versions/A/Headers",
                 "/opt/homebrew/Cellar/qt/6.5.1_3/lib/QtDataVisualization.framework/Versions/A/Headers",
+                "/opt/homebrew/Cellar/xgboost/1.7.6/include/",
                 "/opt/homebrew/Cellar/qt/6.5.1_3/lib"
             ],
             "defines": [],

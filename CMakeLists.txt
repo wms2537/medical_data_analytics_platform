@@ -12,6 +12,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(Qt6 REQUIRED COMPONENTS Widgets Charts DataVisualization)
+find_package(xgboost REQUIRED)
 qt_standard_project_setup()
 
 qt_add_executable(main
@@ -25,7 +26,7 @@ qt_add_executable(main
     main.cpp
 )
 
-target_link_libraries(main PRIVATE Qt6::Widgets Qt6::Charts Qt6::DataVisualization)
+target_link_libraries(main PRIVATE Qt6::Widgets Qt6::Charts Qt6::DataVisualization xgboost::xgboost)
 
 set_target_properties(main PROPERTIES
     WIN32_EXECUTABLE ON

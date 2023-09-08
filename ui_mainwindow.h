@@ -1,13 +1,13 @@
 /********************************************************************************
-** Form generated from reading UI file 'mainwindowcLdlND.ui'
+** Form generated from reading UI file 'mainwindowhYcYAx.ui'
 **
 ** Created by: Qt User Interface Compiler version 6.5.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
 
-#ifndef MAINWINDOWCLDLND_H
-#define MAINWINDOWCLDLND_H
+#ifndef MAINWINDOWHYCYAX_H
+#define MAINWINDOWHYCYAX_H
 
 #include <QtCharts/QChartView>
 #include <QtCore/QVariant>
@@ -24,6 +24,7 @@
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QProgressBar>
 #include <QtWidgets/QPushButton>
+#include <QtWidgets/QScrollArea>
 #include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QSpinBox>
 #include <QtWidgets/QStackedWidget>
@@ -137,9 +138,19 @@ public:
     QSpinBox *spinBox_causal_epoch;
     QLabel *label_27;
     QSpinBox *spinBox_causal_depth;
+    QPushButton *pushButton_causal_train;
     QLabel *label_28;
     QProgressBar *progressBar_causal;
+    QScrollArea *scrollArea;
+    QWidget *scrollAreaWidgetContents;
     QChartView *causal_result;
+    QHBoxLayout *horizontalLayout_10;
+    QLabel *label_29;
+    QLabel *label_causal_acc;
+    QLabel *label_30;
+    QLabel *label_causal_auc;
+    QLabel *label_32;
+    QLabel *label_causal_f1;
     QMenuBar *menubar;
     QMenu *menuFile;
     QStatusBar *statusbar;
@@ -148,7 +159,7 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName("MainWindow");
-        MainWindow->resize(842, 609);
+        MainWindow->resize(1024, 768);
         actionLoad = new QAction(MainWindow);
         actionLoad->setObjectName("actionLoad");
         centralwidget = new QWidget(MainWindow);
@@ -650,7 +661,9 @@ public:
 
         spinBox_causal_epoch = new QSpinBox(page_causal_analysis);
         spinBox_causal_epoch->setObjectName("spinBox_causal_epoch");
-        spinBox_causal_epoch->setValue(50);
+        spinBox_causal_epoch->setMinimum(1);
+        spinBox_causal_epoch->setMaximum(1000);
+        spinBox_causal_epoch->setValue(100);
 
         horizontalLayout_9->addWidget(spinBox_causal_epoch);
 
@@ -663,11 +676,18 @@ public:
 
         spinBox_causal_depth = new QSpinBox(page_causal_analysis);
         spinBox_causal_depth->setObjectName("spinBox_causal_depth");
+        spinBox_causal_depth->setMinimum(1);
+        spinBox_causal_depth->setValue(6);
 
         horizontalLayout_9->addWidget(spinBox_causal_depth);
 
 
         verticalLayout_7->addLayout(horizontalLayout_9);
+
+        pushButton_causal_train = new QPushButton(page_causal_analysis);
+        pushButton_causal_train->setObjectName("pushButton_causal_train");
+
+        verticalLayout_7->addWidget(pushButton_causal_train);
 
         label_28 = new QLabel(page_causal_analysis);
         label_28->setObjectName("label_28");
@@ -678,14 +698,80 @@ public:
 
         progressBar_causal = new QProgressBar(page_causal_analysis);
         progressBar_causal->setObjectName("progressBar_causal");
-        progressBar_causal->setValue(24);
+        progressBar_causal->setValue(0);
 
         verticalLayout_7->addWidget(progressBar_causal);
 
-        causal_result = new QChartView(page_causal_analysis);
+        scrollArea = new QScrollArea(page_causal_analysis);
+        scrollArea->setObjectName("scrollArea");
+        scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+        scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+        scrollArea->setSizeAdjustPolicy(QAbstractScrollArea::AdjustIgnored);
+        scrollArea->setWidgetResizable(true);
+        scrollAreaWidgetContents = new QWidget();
+        scrollAreaWidgetContents->setObjectName("scrollAreaWidgetContents");
+        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 794, 453));
+        QSizePolicy sizePolicy7(QSizePolicy::Preferred, QSizePolicy::Preferred);
+        sizePolicy7.setHorizontalStretch(0);
+        sizePolicy7.setVerticalStretch(0);
+        sizePolicy7.setHeightForWidth(scrollAreaWidgetContents->sizePolicy().hasHeightForWidth());
+        scrollAreaWidgetContents->setSizePolicy(sizePolicy7);
+        scrollAreaWidgetContents->setMinimumSize(QSize(0, 0));
+        causal_result = new QChartView(scrollAreaWidgetContents);
         causal_result->setObjectName("causal_result");
+        causal_result->setGeometry(QRect(0, 0, 800, 1000));
+        sizePolicy2.setHeightForWidth(causal_result->sizePolicy().hasHeightForWidth());
+        causal_result->setSizePolicy(sizePolicy2);
+        causal_result->setMinimumSize(QSize(0, 0));
+        causal_result->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+        causal_result->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+        causal_result->setSizeAdjustPolicy(QAbstractScrollArea::AdjustIgnored);
+        causal_result->setInteractive(false);
+        causal_result->setDragMode(QGraphicsView::NoDrag);
+        scrollArea->setWidget(scrollAreaWidgetContents);
 
-        verticalLayout_7->addWidget(causal_result);
+        verticalLayout_7->addWidget(scrollArea);
+
+        horizontalLayout_10 = new QHBoxLayout();
+        horizontalLayout_10->setObjectName("horizontalLayout_10");
+        label_29 = new QLabel(page_causal_analysis);
+        label_29->setObjectName("label_29");
+        sizePolicy3.setHeightForWidth(label_29->sizePolicy().hasHeightForWidth());
+        label_29->setSizePolicy(sizePolicy3);
+
+        horizontalLayout_10->addWidget(label_29);
+
+        label_causal_acc = new QLabel(page_causal_analysis);
+        label_causal_acc->setObjectName("label_causal_acc");
+
+        horizontalLayout_10->addWidget(label_causal_acc);
+
+        label_30 = new QLabel(page_causal_analysis);
+        label_30->setObjectName("label_30");
+        sizePolicy3.setHeightForWidth(label_30->sizePolicy().hasHeightForWidth());
+        label_30->setSizePolicy(sizePolicy3);
+
+        horizontalLayout_10->addWidget(label_30);
+
+        label_causal_auc = new QLabel(page_causal_analysis);
+        label_causal_auc->setObjectName("label_causal_auc");
+
+        horizontalLayout_10->addWidget(label_causal_auc);
+
+        label_32 = new QLabel(page_causal_analysis);
+        label_32->setObjectName("label_32");
+        sizePolicy3.setHeightForWidth(label_32->sizePolicy().hasHeightForWidth());
+        label_32->setSizePolicy(sizePolicy3);
+
+        horizontalLayout_10->addWidget(label_32);
+
+        label_causal_f1 = new QLabel(page_causal_analysis);
+        label_causal_f1->setObjectName("label_causal_f1");
+
+        horizontalLayout_10->addWidget(label_causal_f1);
+
+
+        verticalLayout_7->addLayout(horizontalLayout_10);
 
         stackedWidget->addWidget(page_causal_analysis);
 
@@ -697,7 +783,7 @@ public:
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName("menubar");
-        menubar->setGeometry(QRect(0, 0, 842, 38));
+        menubar->setGeometry(QRect(0, 0, 1024, 38));
         menuFile = new QMenu(menubar);
         menuFile->setObjectName("menuFile");
         MainWindow->setMenuBar(menubar);
@@ -710,7 +796,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        stackedWidget->setCurrentIndex(2);
+        stackedWidget->setCurrentIndex(7);
         comboBox_clustering_algorithm->setCurrentIndex(0);
 
 
@@ -779,7 +865,14 @@ public:
 
         label_26->setText(QCoreApplication::translate("MainWindow", "Epochs", nullptr));
         label_27->setText(QCoreApplication::translate("MainWindow", "Depth", nullptr));
+        pushButton_causal_train->setText(QCoreApplication::translate("MainWindow", "Start Training", nullptr));
         label_28->setText(QCoreApplication::translate("MainWindow", "Train Progress", nullptr));
+        label_29->setText(QCoreApplication::translate("MainWindow", "Acc: ", nullptr));
+        label_causal_acc->setText(QString());
+        label_30->setText(QCoreApplication::translate("MainWindow", "AUC:", nullptr));
+        label_causal_auc->setText(QString());
+        label_32->setText(QCoreApplication::translate("MainWindow", "F1 Score:", nullptr));
+        label_causal_f1->setText(QString());
         menuFile->setTitle(QCoreApplication::translate("MainWindow", "File", nullptr));
     } // retranslateUi
 
@@ -791,4 +884,4 @@ namespace Ui {
 
 QT_END_NAMESPACE
 
-#endif // MAINWINDOWCLDLND_H
+#endif // MAINWINDOWHYCYAX_H

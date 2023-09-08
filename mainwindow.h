@@ -43,6 +43,7 @@ private:
     void createCorrelationMatrix();
     void createPca();
     void createClustering();
+    void trainXgBoostAndCreateChart();
     // LoginDialog *loginDialog;
     // SignUpDialog *signUpDialog;
 };

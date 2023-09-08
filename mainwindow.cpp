@@ -3,6 +3,7 @@
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QBarSet>
+#include <QHorizontalBarSeries>
 #include <QBarSeries>
 #include <QSplineSeries>
 #include <QBarCategoryAxis>
@@ -17,8 +18,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     ui->setupUi(this);
     pageIndex = 0;
     ui->stackedWidget->setCurrentIndex(pageIndex);
-    // csvReader.loadFile("/Users/sohweimeng/Documents/cpp_dev/medical_data_analytics_platform/breast-cancer.csv");
-    // initialiseGraphs();
+    csvReader.loadFile("/Users/sohweimeng/Documents/cpp_dev/medical_data_analytics_platform/breast-cancer.csv");
+    initialiseGraphs();
+    fileLoaded = true;
     connect(ui->actionLoad, &QAction::triggered, this, [=]
             {
                 fileLoaded = false;
@@ -151,6 +153,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
                 resetMenuSelected();
                 ui->label_menu_causal_analysis->setStyleSheet("background-color: gray;");
                 ui->stackedWidget->setCurrentIndex(pageIndex); });
+
+    connect(ui->pushButton_causal_train, &QPushButton::clicked, this, [=]
+            { trainXgBoostAndCreateChart(); });
 }
 
 void MainWindow::resetMenuSelected()
@@ -522,7 +527,6 @@ void MainWindow::createPca()
         scatter3d->setAspectRatio(1.0);
         scatter3d->setHorizontalAspectRatio(1.0);
         scatter3d->setShadowQuality(QAbstract3DGraph::ShadowQualityNone);
-        QVBoxLayout *layout = new QVBoxLayout();
         QWidget *scatterWindow = QWidget::createWindowContainer(scatter3d);
         QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
         sizePolicy.setHorizontalStretch(0);
@@ -650,7 +654,6 @@ void MainWindow::createClustering()
         scatter3d->setAspectRatio(1.0);
         scatter3d->setHorizontalAspectRatio(1.0);
         scatter3d->setShadowQuality(QAbstract3DGraph::ShadowQualityNone);
-        QVBoxLayout *layout = new QVBoxLayout();
         QWidget *scatterWindow = QWidget::createWindowContainer(scatter3d);
         QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
         sizePolicy.setHorizontalStretch(0);
@@ -662,6 +665,67 @@ void MainWindow::createClustering()
         cluster3d = scatterWindow;
         iscluster3d = true;
     }
+}
+
+void MainWindow::trainXgBoostAndCreateChart()
+{
+    float trainRatio = 0.9;
+    switch (ui->comboBox_causal_traintest->currentIndex())
+    {
+    case 0:
+        trainRatio = 0.9;
+        break;
+    case 1:
+        trainRatio = 0.8;
+        break;
+    case 2:
+        trainRatio = 0.7;
+        break;
+    case 3:
+        trainRatio = 0.5;
+        break;
+    default:
+        break;
+    }
+    ui->progressBar_causal->setMaximum(ui->spinBox_causal_epoch->value());
+    auto res = csvReader.trainModel(trainRatio, ui->spinBox_causal_epoch->value(), ui->spinBox_causal_depth->value(), [=](int epoch)
+                                    { ui->progressBar_causal->setValue(epoch); });
+    ui->label_causal_acc->setText(QString::fromStdString(std::to_string(std::get<1>(res))));
+    ui->label_causal_auc->setText(QString::fromStdString(std::to_string(std::get<2>(res))));
+    ui->label_causal_f1->setText(QString::fromStdString(std::to_string(std::get<3>(res))));
+
+    QBarSet *barSet = new QBarSet("Importance Score");
+    QBarCategoryAxis *axisY = new QBarCategoryAxis;
+    QValueAxis *axisX = new QValueAxis;
+    axisX->setLabelFormat("%.2f");
+    axisX->setTitleText("Score");
+    axisY->setLabelsAngle(0);
+    axisY->setLabelsFont(QFont("Arial", 10));
+
+    // Add data to the bar set
+    for (size_t i = 0; i < csvReader.getHeaders().size()-2; ++i)
+    {
+        barSet->append(std::get<4>(res)[i]);
+        axisY->append(QString::fromStdString(csvReader.getHeaders()[i+2]));
+    }
+
+    QHorizontalBarSeries *barSeries = new QHorizontalBarSeries;
+    barSeries->append(barSet);
+
+    QChart *chart = new QChart();
+    chart->addSeries(barSeries);
+    chart->setTitle("Simple Horizontal Bar Chart");
+    chart->setAnimationOptions(QChart::SeriesAnimations);
+
+    chart->addAxis(axisY, Qt::AlignLeft);
+    barSeries->attachAxis(axisY);
+    chart->addAxis(axisX, Qt::AlignBottom);
+    barSeries->attachAxis(axisX);
+    axisX->applyNiceNumbers();
+    ui->causal_result->setChart(chart);
+    // ui->scrollAreaWidgetContents->adjustSize();
+    // ui->scrollAreaWidgetContents->updateGeometry();
+    ui->scrollArea->updateGeometry();
 }
 
 void MainWindow::generateColumnMeanStd(int col)
