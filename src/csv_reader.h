@@ -16,8 +16,6 @@
 #include "algorithms/normalise.hpp"
 #include "algorithms/xgboost_example.h"
 
-using namespace std;
-
 struct MeanStdResult
 {
     int columnIndex;
@@ -35,25 +33,25 @@ enum ClusteringAlgorithm {
 
 class CSVReader
 {
-    vector<vector<float>> content;
-    vector<string> headers;
+    std::vector<std::vector<float>> content;
+    std::vector<std::string> headers;
 
 public:
     CSVReader(){};
-    void loadFile(string filePath)
+    void loadFile(std::string filePath)
     {
-        vector<float> row;
-        string line, word;
+        std::vector<float> row;
+        std::string line, word;
 
-        fstream file(filePath, ios::in);
+        std::fstream file(filePath, std::ios::in);
         if (file.is_open())
         {
             bool headersLoaded = false;
-            while (getline(file, line))
+            while (std::getline(file, line))
             {
                 row.clear();
 
-                stringstream str(line);
+                std::stringstream str(line);
 
                 while (getline(str, word, ','))
                 {
@@ -92,11 +90,11 @@ public:
         clustering(ClusteringAlgorithm::Spectral, {1, 2, 3, 4, 5}, 2);
         clustering(ClusteringAlgorithm::MeanShift, {1, 2, 3, 4, 5}, 2);
     }
-    vector<vector<float>> getContent()
+    std::vector<std::vector<float>> getContent()
     {
         return content;
     }
-    vector<string> getHeaders()
+    std::vector<std::string> getHeaders()
     {
         return headers;
     }
@@ -106,18 +104,18 @@ public:
     }
     MeanStdResult getMeanStd(int col)
     {
-        vector<float> inX;
+        std::vector<float> inX;
         for (int i = 0; i < content.size(); i++)
         {
             inX.push_back(content[i][col]);
         }
 
         auto res = getAvgVar(inX);
-        return {col, headers[col], get<0>(res), get<0>(res)};
+        return {col, headers[col], std::get<0>(res), std::get<1>(res)};
     }
-    tuple<Eigen::VectorXf, float, float, vector<float>, float, float, float, float> getLeastSquareAndPR(int xIndex, int yIndex, int inDegree)
+    std::tuple<Eigen::VectorXf, float, float, std::vector<float>, float, float, float, float> getLeastSquareAndPR(int xIndex, int yIndex, int inDegree)
     {
-        vector<float> inX, inY;
+        std::vector<float> inX, inY;
         for (int i = 0; i < content.size(); i++)
         {
             inX.push_back(content[i][xIndex]);
@@ -132,9 +130,9 @@ public:
         float maxY = *max_element(inY.begin(), inY.end());
 
         return {
-            get<0>(res),
-            get<1>(res),
-            get<2>(res),
+            std::get<0>(res),
+            std::get<1>(res),
+            std::get<2>(res),
             range(minX, maxX, inDegree + 5),
             minX,
             maxX,
@@ -142,9 +140,9 @@ public:
             maxY};
     }
 
-    vector<float> range(float min, float max, size_t N)
+    std::vector<float> range(float min, float max, size_t N)
     {
-        vector<float> range;
+        std::vector<float> range;
         float delta = (max - min) / float(N - 1);
         for (int i = 0; i < N; i++)
         {
@@ -152,12 +150,12 @@ public:
         }
         return range;
     }
-    tuple<vector<vector<float>>, float, float> getCorrelationMatrix(vector<int> cols, bool isPearson)
+    std::tuple<std::vector<std::vector<float>>, float, float> getCorrelationMatrix(std::vector<int> cols, bool isPearson)
     {
-        vector<vector<float>> inMat;
+        std::vector<std::vector<float>> inMat;
         for (auto col : cols)
         {
-            vector<float> temp;
+            std::vector<float> temp;
             for (auto row : content)
             {
 
@@ -169,7 +167,7 @@ public:
         auto res = getCovariance(inMat);
         if (isPearson)
         {
-            vector<float> vars;
+            std::vector<float> vars;
             for (auto vec : inMat)
             {
                 auto avgVar = getAvgVar(vec);
@@ -177,11 +175,11 @@ public:
             }
             res = getPearsonCorr(res, vars);
         }
-        vector<vector<float>> result;
+        std::vector<std::vector<float>> result;
         float min = 0, max = 0;
         for (int i = 0; i < cols.size(); i++)
         {
-            vector<float> temp;
+            std::vector<float> temp;
             for (int j = 0; j < cols.size(); j++)
             {
                 if (res(i, j) < min)
@@ -194,12 +192,12 @@ public:
         }
         return {result, min, max};
     }
-    vector<vector<float>> getPca(vector<int> cols, int dim)
+    std::vector<std::vector<float>> getPca(std::vector<int> cols, int dim)
     {
-        vector<vector<float>> inMat;
+        std::vector<std::vector<float>> inMat;
         for (auto row : content)
         {
-            vector<float> temp;
+            std::vector<float> temp;
             for (auto col : cols)
             {
                 temp.push_back(row[col+1]);
@@ -207,11 +205,11 @@ public:
             inMat.push_back(temp);
         }
         auto res = pca(inMat, dim);
-        vector<vector<float>> result;
+        std::vector<std::vector<float>> result;
         // float min = 0, max = 0;
         for (int i = 0; i < content.size(); i++)
         {
-            vector<float> temp;
+            std::vector<float> temp;
             for (int j = 0; j < dim; j++)
             {
                 // if (res(i, j) < min)
@@ -224,18 +222,18 @@ public:
         }
         return result;
     }
-    vector<int> clustering(ClusteringAlgorithm algo, vector<int> cols, int k) {
-        vector<vector<float>> inMat;
+    std::vector<int> clustering(ClusteringAlgorithm algo, std::vector<int> cols, int k) {
+        std::vector<std::vector<float>> inMat;
         for (auto row : content)
         {
-            vector<float> temp;
+            std::vector<float> temp;
             for (auto col : cols)
             {
                 temp.push_back(row[col+1]);
             }
             inMat.push_back(temp);
         }
-        vector<int> res;
+        std::vector<int> res;
         switch (algo)
         {
         case ClusteringAlgorithm::K_Means:
@@ -271,12 +269,12 @@ public:
         }
         return res;
     }
-    tuple<vector<float>, float, float, float, vector<float>> trainModel(float trainRatio, int epochs, int depth, function<void(int)> epochCallback) {
-        vector<vector<float>> inMat;
-        vector<float> labels;
+    std::tuple<std::vector<float>, float, float, float, std::vector<float>> trainModel(float trainRatio, int epochs, int depth, std::function<void(int)> epochCallback) {
+        std::vector<std::vector<float>> inMat;
+        std::vector<float> labels;
         for (auto row : content)
         {
-            vector<float> temp;
+            std::vector<float> temp;
             for (int i = 1; i < row.size()-4; i++)
             {
                 if(i == 1) {

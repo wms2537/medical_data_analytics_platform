@@ -64,7 +64,7 @@ void HeatmapWidget::paintEvent(QPaintEvent *event)
         QString label = yAxisLabels.size() > row ? yAxisLabels[row] : QString();
         QRectF textRect(0, row * cellHeight + 30, cellHeight, 30);
 
-        textRect.translate(-30, 30);
+        textRect.translate(-45, 30);
 
         // Rotate the painter for each label
         painter.save();

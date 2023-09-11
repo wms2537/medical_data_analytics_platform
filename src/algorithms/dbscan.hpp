@@ -2,7 +2,6 @@
 #include "common.h"
 
 using namespace Eigen;
-using namespace std;
 
 // Define a structure to represent a data point
 struct Point {
@@ -12,8 +11,8 @@ struct Point {
 };
 
 // Function to find neighbor points within epsilon distance
-inline vector<int> findNeighbors(const vector<Point>& points, int pointIdx, float epsilon) {
-    vector<int> neighbors;
+inline std::vector<int> findNeighbors(const std::vector<Point>& points, int pointIdx, float epsilon) {
+    std::vector<int> neighbors;
     for (int i = 0; i < points.size(); ++i) {
         if (calculateDistance(points[pointIdx].coordinates, points[i].coordinates) <= epsilon) {
             neighbors.push_back(i);
@@ -23,9 +22,9 @@ inline vector<int> findNeighbors(const vector<Point>& points, int pointIdx, floa
 }
 
 // Function to expand a cluster
-inline void expandCluster(vector<Point>& points, int pointIdx, int cluster, float epsilon, int minPts) {
+inline void expandCluster(std::vector<Point>& points, int pointIdx, int cluster, float epsilon, int minPts) {
     points[pointIdx].cluster = cluster;
-    vector<int> neighbors = findNeighbors(points, pointIdx, epsilon);
+    std::vector<int> neighbors = findNeighbors(points, pointIdx, epsilon);
     
     if (neighbors.size() < minPts) {
         return; // Not a core point, stop recursion
@@ -44,8 +43,8 @@ inline void expandCluster(vector<Point>& points, int pointIdx, int cluster, floa
 }
 
 // DBSCAN clustering algorithm
-inline vector<int> dbscanClustering(const vector<vector<float>>& input_data, float epsilon, int minPts) {
-    vector<Point> points(input_data.size());
+inline std::vector<int> dbscanClustering(const std::vector<std::vector<float>>& input_data, float epsilon, int minPts) {
+    std::vector<Point> points(input_data.size());
     int cluster = 0;
 
     // Initialize points
@@ -62,7 +61,7 @@ inline vector<int> dbscanClustering(const vector<vector<float>>& input_data, flo
     for (int i = 0; i < points.size(); ++i) {
         if (!points[i].visited) {
             points[i].visited = true;
-            vector<int> neighbors = findNeighbors(points, i, epsilon);
+            std::vector<int> neighbors = findNeighbors(points, i, epsilon);
             
             if (neighbors.size() < minPts) {
                 // Mark this point as noise
@@ -75,7 +74,7 @@ inline vector<int> dbscanClustering(const vector<vector<float>>& input_data, flo
     }
 
     // Extract cluster assignments
-    vector<int> clusterAssignments(points.size());
+    std::vector<int> clusterAssignments(points.size());
     for (int i = 0; i < points.size(); ++i) {
         clusterAssignments[i] = points[i].cluster;
     }

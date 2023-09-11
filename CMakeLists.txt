@@ -16,14 +16,14 @@ find_package(xgboost REQUIRED)
 qt_standard_project_setup()
 
 qt_add_executable(main
-    mainwindow.ui
-    mainwindow.cpp
-    clickable_label.cpp
-    multiselect_combobox.cpp
-    heatmap_widget.cpp
-    heatmap_legend.cpp
-    legend.cpp
-    main.cpp
+    src/mainwindow.ui
+    src/mainwindow.cpp
+    src/clickable_label.cpp
+    src/multiselect_combobox.cpp
+    src/heatmap_widget.cpp
+    src/heatmap_legend.cpp
+    src/legend.cpp
+    src/main.cpp
 )
 
 target_link_libraries(main PRIVATE Qt6::Widgets Qt6::Charts Qt6::DataVisualization xgboost::xgboost)

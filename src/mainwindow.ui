@@ -804,78 +804,30 @@
            </widget>
           </item>
           <item>
-           <widget class="QScrollArea" name="scrollArea">
-            <property name="verticalScrollBarPolicy">
-             <enum>Qt::ScrollBarAlwaysOn</enum>
+           <widget class="QPushButton" name="pushButton_causal_scrollup">
+            <property name="text">
+             <string>Scroll Up</string>
             </property>
-            <property name="horizontalScrollBarPolicy">
-             <enum>Qt::ScrollBarAlwaysOn</enum>
+           </widget>
+          </item>
+          <item>
+           <widget class="QChartView" name="causal_result">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
             </property>
-            <property name="sizeAdjustPolicy">
-             <enum>QAbstractScrollArea::AdjustIgnored</enum>
+            <property name="dragMode">
+             <enum>QGraphicsView::RubberBandDrag</enum>
             </property>
-            <property name="widgetResizable">
-             <bool>true</bool>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pushButton_causal_scrolldown">
+            <property name="text">
+             <string>Scroll Down</string>
             </property>
-            <widget class="QWidget" name="scrollAreaWidgetContents">
-             <property name="geometry">
-              <rect>
-               <x>0</x>
-               <y>0</y>
-               <width>794</width>
-               <height>453</height>
-              </rect>
-             </property>
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="minimumSize">
-              <size>
-               <width>0</width>
-               <height>0</height>
-              </size>
-             </property>
-             <widget class="QChartView" name="causal_result">
-              <property name="geometry">
-               <rect>
-                <x>0</x>
-                <y>0</y>
-                <width>800</width>
-                <height>1000</height>
-               </rect>
-              </property>
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>0</height>
-               </size>
-              </property>
-              <property name="verticalScrollBarPolicy">
-               <enum>Qt::ScrollBarAsNeeded</enum>
-              </property>
-              <property name="horizontalScrollBarPolicy">
-               <enum>Qt::ScrollBarAsNeeded</enum>
-              </property>
-              <property name="sizeAdjustPolicy">
-               <enum>QAbstractScrollArea::AdjustIgnored</enum>
-              </property>
-              <property name="interactive">
-               <bool>false</bool>
-              </property>
-              <property name="dragMode">
-               <enum>QGraphicsView::NoDrag</enum>
-              </property>
-             </widget>
-            </widget>
            </widget>
           </item>
           <item>

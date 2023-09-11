@@ -1,7 +1,6 @@
 #include "common.h"
 
 using namespace Eigen;
-using namespace std;
 
 // Define a structure to represent a data point
 struct MSPoint {
@@ -10,10 +9,10 @@ struct MSPoint {
 };
 
 // Mean Shift clustering algorithm
-inline vector<int> meanShiftClustering(const vector<vector<float>>& input_data, float bandwidth) {
-    vector<VectorXf> dataset = convertToEigenVectors(input_data);
+inline std::vector<int> meanShiftClustering(const std::vector<std::vector<float>>& input_data, float bandwidth) {
+    std::vector<VectorXf> dataset = convertToEigenVectors(input_data);
     int dataSize = dataset.size();
-    vector<MSPoint> points(dataSize);
+    std::vector<MSPoint> points(dataSize);
 
     // Initialize points
     for (int i = 0; i < dataSize; ++i) {
@@ -21,12 +20,12 @@ inline vector<int> meanShiftClustering(const vector<vector<float>>& input_data, 
         points[i].visited = false;
     }
 
-    vector<int> clusterAssignments(dataSize);
+    std::vector<int> clusterAssignments(dataSize);
     int clusterIndex = 0;
 
     for (int i = 0; i < dataSize; ++i) {
         if (!points[i].visited) {
-            vector<int> clusterIndices;
+            std::vector<int> clusterIndices;
             VectorXf meanShiftVector = points[i].coordinates;
             
             while (true) {
@@ -41,7 +40,7 @@ inline vector<int> meanShiftClustering(const vector<vector<float>>& input_data, 
                     }
                 }
 
-                // Calculate the mean shift vector
+                // Calculate the mean shift std::vector
                 VectorXf sumShift = VectorXf::Zero(meanShiftVector.size());
                 float sumWeights = 0.0;
                 for (int idx : clusterIndices) {

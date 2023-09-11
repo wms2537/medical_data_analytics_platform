@@ -1,13 +1,13 @@
 /********************************************************************************
-** Form generated from reading UI file 'mainwindowhYcYAx.ui'
+** Form generated from reading UI file 'mainwindowKcFedT.ui'
 **
 ** Created by: Qt User Interface Compiler version 6.5.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
 
-#ifndef MAINWINDOWHYCYAX_H
-#define MAINWINDOWHYCYAX_H
+#ifndef MAINWINDOWKCFEDT_H
+#define MAINWINDOWKCFEDT_H
 
 #include <QtCharts/QChartView>
 #include <QtCore/QVariant>
@@ -24,7 +24,6 @@
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QProgressBar>
 #include <QtWidgets/QPushButton>
-#include <QtWidgets/QScrollArea>
 #include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QSpinBox>
 #include <QtWidgets/QStackedWidget>
@@ -141,9 +140,9 @@ public:
     QPushButton *pushButton_causal_train;
     QLabel *label_28;
     QProgressBar *progressBar_causal;
-    QScrollArea *scrollArea;
-    QWidget *scrollAreaWidgetContents;
+    QPushButton *pushButton_causal_scrollup;
     QChartView *causal_result;
+    QPushButton *pushButton_causal_scrolldown;
     QHBoxLayout *horizontalLayout_10;
     QLabel *label_29;
     QLabel *label_causal_acc;
@@ -702,35 +701,23 @@ public:
 
         verticalLayout_7->addWidget(progressBar_causal);
 
-        scrollArea = new QScrollArea(page_causal_analysis);
-        scrollArea->setObjectName("scrollArea");
-        scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
-        scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
-        scrollArea->setSizeAdjustPolicy(QAbstractScrollArea::AdjustIgnored);
-        scrollArea->setWidgetResizable(true);
-        scrollAreaWidgetContents = new QWidget();
-        scrollAreaWidgetContents->setObjectName("scrollAreaWidgetContents");
-        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 794, 453));
-        QSizePolicy sizePolicy7(QSizePolicy::Preferred, QSizePolicy::Preferred);
-        sizePolicy7.setHorizontalStretch(0);
-        sizePolicy7.setVerticalStretch(0);
-        sizePolicy7.setHeightForWidth(scrollAreaWidgetContents->sizePolicy().hasHeightForWidth());
-        scrollAreaWidgetContents->setSizePolicy(sizePolicy7);
-        scrollAreaWidgetContents->setMinimumSize(QSize(0, 0));
-        causal_result = new QChartView(scrollAreaWidgetContents);
-        causal_result->setObjectName("causal_result");
-        causal_result->setGeometry(QRect(0, 0, 800, 1000));
-        sizePolicy2.setHeightForWidth(causal_result->sizePolicy().hasHeightForWidth());
-        causal_result->setSizePolicy(sizePolicy2);
-        causal_result->setMinimumSize(QSize(0, 0));
-        causal_result->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-        causal_result->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-        causal_result->setSizeAdjustPolicy(QAbstractScrollArea::AdjustIgnored);
-        causal_result->setInteractive(false);
-        causal_result->setDragMode(QGraphicsView::NoDrag);
-        scrollArea->setWidget(scrollAreaWidgetContents);
+        pushButton_causal_scrollup = new QPushButton(page_causal_analysis);
+        pushButton_causal_scrollup->setObjectName("pushButton_causal_scrollup");
 
-        verticalLayout_7->addWidget(scrollArea);
+        verticalLayout_7->addWidget(pushButton_causal_scrollup);
+
+        causal_result = new QChartView(page_causal_analysis);
+        causal_result->setObjectName("causal_result");
+        sizePolicy4.setHeightForWidth(causal_result->sizePolicy().hasHeightForWidth());
+        causal_result->setSizePolicy(sizePolicy4);
+        causal_result->setDragMode(QGraphicsView::RubberBandDrag);
+
+        verticalLayout_7->addWidget(causal_result);
+
+        pushButton_causal_scrolldown = new QPushButton(page_causal_analysis);
+        pushButton_causal_scrolldown->setObjectName("pushButton_causal_scrolldown");
+
+        verticalLayout_7->addWidget(pushButton_causal_scrolldown);
 
         horizontalLayout_10 = new QHBoxLayout();
         horizontalLayout_10->setObjectName("horizontalLayout_10");
@@ -867,6 +854,8 @@ public:
         label_27->setText(QCoreApplication::translate("MainWindow", "Depth", nullptr));
         pushButton_causal_train->setText(QCoreApplication::translate("MainWindow", "Start Training", nullptr));
         label_28->setText(QCoreApplication::translate("MainWindow", "Train Progress", nullptr));
+        pushButton_causal_scrollup->setText(QCoreApplication::translate("MainWindow", "Scroll Up", nullptr));
+        pushButton_causal_scrolldown->setText(QCoreApplication::translate("MainWindow", "Scroll Down", nullptr));
         label_29->setText(QCoreApplication::translate("MainWindow", "Acc: ", nullptr));
         label_causal_acc->setText(QString());
         label_30->setText(QCoreApplication::translate("MainWindow", "AUC:", nullptr));
@@ -884,4 +873,4 @@ namespace Ui {
 
 QT_END_NAMESPACE
 
-#endif // MAINWINDOWHYCYAX_H
+#endif // MAINWINDOWKCFEDT_H

@@ -10,7 +10,6 @@
 #include <numeric>
 #include <cmath>
 
-using namespace std;
 
 #define safe_xgboost(call)                                                                              \
     {                                                                                                   \
@@ -32,11 +31,11 @@ inline double calculateAUC(const std::vector<float> &labels, const std::vector<f
         label_pred_pairs.emplace_back(labels[i], predictions[i]);
     }
 
-    // Sort by prediction values in descending order
+    // Sort by prediction values in ascending order
     std::sort(label_pred_pairs.begin(), label_pred_pairs.end(),
               [](const std::pair<int, float> &a, const std::pair<int, float> &b)
               {
-                  return a.second > b.second;
+                  return a.second < b.second;
               });
 
     // Calculate AUC using the trapezoidal rule
@@ -53,18 +52,24 @@ inline double calculateAUC(const std::vector<float> &labels, const std::vector<f
         }
         else
         {
-            auc += (tpr + prev_tpr) * (pair.second - prev_fpr) / 2.0;
+            if (tpr > 0.0)  // Avoid division by zero
+            {
+                auc += (tpr + prev_tpr) * (pair.second - prev_fpr) / 2.0;
+            }
             prev_fpr = pair.second;
             prev_tpr = tpr;
         }
     }
 
-    auc += (1.0 + prev_tpr) * (1.0 - prev_fpr) / 2.0;
+    if (prev_tpr > 0.0 && prev_fpr < 1.0)  // Avoid division by zero
+    {
+        auc += (1.0 + prev_tpr) * (1.0 - prev_fpr) / 2.0;
+    }
 
     return auc;
 }
 
-inline tuple<vector<float>, float, float, float, vector<float>> trainXgBoost(std::vector<std::vector<float>> input_data, vector<float> labels, float trainRatio, int epochs, int depth, function<void(int)> epochCallback)
+inline std::tuple<std::vector<float>, float, float, float, std::vector<float>> trainXgBoost(std::vector<std::vector<float>> input_data, std::vector<float> labels, float trainRatio, int epochs, int depth, std::function<void(int)> epochCallback)
 {
     BoosterHandle booster;
     // Convert input data to DMatrix
@@ -105,17 +110,17 @@ inline tuple<vector<float>, float, float, float, vector<float>> trainXgBoost(std
     bst_ulong trainrows, traincols;
     XGDMatrixNumRow(train_dmatrix, &trainrows);
     XGDMatrixNumCol(train_dmatrix, &traincols);
-    std::cout << "Train Data:" << trainrows << " rows, " << traincols << " columns" << endl;
+    // std::cout << "Train Data:" << trainrows << " rows, " << traincols << " columns" << endl;
     bst_ulong testrows, testcols;
     XGDMatrixNumRow(test_dmatrix, &testrows);
     XGDMatrixNumCol(test_dmatrix, &testcols);
-    std::cout << "Test Data:" << testrows << " rows, " << testcols << " columns" << endl;
+    // std::cout << "Test Data:" << testrows << " rows, " << testcols << " columns" << endl;
     // Set XGBoost parameters
-    vector<string> xgboost_args = {
-        "objective=binary:logistic",
+    std::vector<std::string> xgboost_args = {
+        "objective=reg:squarederror",
         "eval_metric=error",
-        "max_depth=" + to_string(depth),
-        "eta=0.3",
+        "max_depth=" + std::to_string(depth),
+        "eta=0.1",
         "silent=0",
     };
 
@@ -137,7 +142,7 @@ inline tuple<vector<float>, float, float, float, vector<float>> trainXgBoost(std
     bst_ulong test_preds_len;
     std::vector<float> test_preds_vector;
     XGBoosterPredict(booster, test_dmatrix, 0, 0, 0, &test_preds_len, &test_preds);
-    std::cout << "Test len: " << test_preds_len <<endl;
+    // std::cout << "Test len: " << test_preds_len <<endl;
     // Calculate accuracy
     int correct_predictions = 0;
     for (bst_ulong i = 0; i < test_preds_len; ++i)
@@ -188,11 +193,11 @@ inline tuple<vector<float>, float, float, float, vector<float>> trainXgBoost(std
     std::cout << "AUC: " << auc << std::endl;
     std::cout << "F1 Score: " << f1_score << std::endl;
 
-    std::cout << "Train 1" << endl;
+    // std::cout << "Train 1" << endl;
     bst_ulong out_len;
     const float *out_result;
     XGBoosterPredict(booster, test_dmatrix, 4, 0, 0, &out_len, &out_result);
-    std::cout << "Train 2 len: " << out_len <<endl;
+    // std::cout << "Train 2 len: " << out_len <<endl;
     std::vector<float> sorted_scores;
 
     for (int i = 0; i < num_cols; i++)
@@ -203,10 +208,10 @@ inline tuple<vector<float>, float, float, float, vector<float>> trainXgBoost(std
             score += out_result[i+j*num_cols];
         }
         
-        std::cout << score << endl;
+        // std::cout << score << endl;
         sorted_scores.push_back(score);
     }
-    std::cout << "Train 3" << endl;
+    // std::cout << "Train 3" << endl;
     // Clean up
     XGDMatrixFree(train_dmatrix);
     XGDMatrixFree(test_dmatrix);

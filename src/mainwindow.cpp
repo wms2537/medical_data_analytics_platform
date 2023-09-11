@@ -11,6 +11,7 @@
 #include <QScatterSeries>
 #include <Q3DScatter>
 #include <QLegendMarker>
+#include <QScrollBar>
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
                                           ui(new Ui::MainWindow)
@@ -18,9 +19,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     ui->setupUi(this);
     pageIndex = 0;
     ui->stackedWidget->setCurrentIndex(pageIndex);
-    csvReader.loadFile("/Users/sohweimeng/Documents/cpp_dev/medical_data_analytics_platform/breast-cancer.csv");
-    initialiseGraphs();
-    fileLoaded = true;
+    // csvReader.loadFile("/Users/sohweimeng/Documents/cpp_dev/medical_data_analytics_platform/breast-cancer.csv");
+    // initialiseGraphs();
+    // fileLoaded = true;
     connect(ui->actionLoad, &QAction::triggered, this, [=]
             {
                 fileLoaded = false;
@@ -156,6 +157,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
 
     connect(ui->pushButton_causal_train, &QPushButton::clicked, this, [=]
             { trainXgBoostAndCreateChart(); });
+    connect(ui->pushButton_causal_scrolldown, &QPushButton::clicked, this, [=]
+            { ui->causal_result->chart()->scroll(0, -20); });
+    connect(ui->pushButton_causal_scrollup, &QPushButton::clicked, this, [=]
+            { ui->causal_result->chart()->scroll(0, 20); });
 }
 
 void MainWindow::resetMenuSelected()
@@ -270,7 +275,7 @@ void MainWindow::createHistogram(bool displayNormal)
         auto axisY = new QValueAxis;
         chart->addAxis(axisY, Qt::AlignLeft);
         barseries->attachAxis(axisY);
-        axisY->setRange(0, max(bCount, mCount));
+        axisY->setRange(0, std::max(bCount, mCount));
 
         chart->legend()->setVisible(true);
         chart->legend()->setAlignment(Qt::AlignBottom);
@@ -542,18 +547,18 @@ void MainWindow::createPca()
 
 void MainWindow::createClustering()
 {
-    std::cout << "1" << endl;
+    // std::cout << "1" << endl;
     ui->cluster_legends->clear();
-    std::cout << "2" << endl;
+    // std::cout << "2" << endl;
     if (iscluster3d)
     {
         ui->cluster3d->removeWidget(cluster3d);
         cluster3d->deleteLater();
         iscluster3d = false;
     }
-    std::cout << "3" << endl;
+    // std::cout << "3" << endl;
     auto selectedColumns = ui->comboBox_pca_columns->getSelectedIndexes();
-    vector<QColor> distinctColors = {
+    std::vector<QColor> distinctColors = {
         QColor::fromRgb(255, 0, 0),     // Red
         QColor::fromRgb(0, 255, 0),     // Green
         QColor::fromRgb(0, 0, 255),     // Blue
@@ -580,7 +585,7 @@ void MainWindow::createClustering()
 
     if (ui->comboBox_clustering_dim->currentIndex() == 0)
     {
-        std::cout << "4" << endl;
+        // std::cout << "4" << endl;
         auto res = csvReader.getPca(selectedColumns, 2);
 
         std::vector<QScatterSeries *> seriesList;
@@ -703,29 +708,51 @@ void MainWindow::trainXgBoostAndCreateChart()
     axisY->setLabelsFont(QFont("Arial", 10));
 
     // Add data to the bar set
-    for (size_t i = 0; i < csvReader.getHeaders().size()-2; ++i)
+
+    std::vector<std::pair<QString, float>> label_pred_pairs;
+    for (size_t i = 0; i < csvReader.getHeaders().size() - 2; ++i)
     {
-        barSet->append(std::get<4>(res)[i]);
-        axisY->append(QString::fromStdString(csvReader.getHeaders()[i+2]));
+        label_pred_pairs.emplace_back(QString::fromStdString(csvReader.getHeaders()[i + 2]), std::get<4>(res)[i]);
+    }
+
+    // Sort by prediction values in ascending order
+    std::sort(label_pred_pairs.begin(), label_pred_pairs.end(),
+              [](const std::pair<QString, float> &a, const std::pair<QString, float> &b)
+              {
+                  return a.second < b.second;
+              });
+    for (const auto &pair : label_pred_pairs)
+    {
+        barSet->append(pair.second);
+        axisY->append(pair.first);
     }
 
     QHorizontalBarSeries *barSeries = new QHorizontalBarSeries;
     barSeries->append(barSet);
+    // barSeries->setBarWidth(1);
 
     QChart *chart = new QChart();
     chart->addSeries(barSeries);
-    chart->setTitle("Simple Horizontal Bar Chart");
+    chart->setTitle("Feature Contributions");
     chart->setAnimationOptions(QChart::SeriesAnimations);
 
     chart->addAxis(axisY, Qt::AlignLeft);
     barSeries->attachAxis(axisY);
     chart->addAxis(axisX, Qt::AlignBottom);
     barSeries->attachAxis(axisX);
+    axisX->setMin(0);
     axisX->applyNiceNumbers();
+
+    // Create a chart view
     ui->causal_result->setChart(chart);
-    // ui->scrollAreaWidgetContents->adjustSize();
-    // ui->scrollAreaWidgetContents->updateGeometry();
-    ui->scrollArea->updateGeometry();
+    ui->causal_result->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    ui->causal_result->setRenderHint(QPainter::Antialiasing); // Enable antialiasing for smoother rendering
+    QRectF rect = ui->causal_result->chart()->plotArea();
+    rect.setHeight(rect.height() / 4.0);
+    QPointF newCenter = ui->causal_result->chart()->plotArea().center();
+    newCenter.setY(newCenter.y() / 1.8);
+    rect.moveCenter(newCenter);
+    ui->causal_result->chart()->zoomIn(rect);
 }
 
 void MainWindow::generateColumnMeanStd(int col)
