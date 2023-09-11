@@ -66,10 +66,10 @@ RUN apt-get install -y --no-install-recommends \
 # Preapre and download cross development environment
 RUN mkdir /build
 WORKDIR  /build
-RUN git clone https://github.com/fatduckling/mxe.git
+RUN git clone https://github.com/wms2537/mxe.git
 
 # Build cross environment
-RUN cd mxe && make qt
+RUN cd mxe && make qt6 xgboost
 
 # TODO: Cleanup all unneeded stuff to make a slim image
 

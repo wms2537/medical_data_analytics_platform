@@ -79,6 +79,7 @@
 ## 2. 功能需求
 ### 2.1 流程概述
 ![flowchart](media/diagram.png)
+
 图1：项目流程图
 #### 2.1.1 上传界面
 根据图1中的流程，用户在本界面进行以下操作：
@@ -124,6 +125,7 @@
 3. 在x-axis下拉选项中选择x轴，下方散点图图会自动刷新。
 4. 在y-axis下拉选项中选择y轴，下方散点图图会自动刷新。
 5. 在Power数字输入中选择拟合曲线的次方，下方拟合曲线会自动刷新。
+6. 点击散点图上的点，右下角会显示该点坐标。
 
 | 操作 | 用户 | 系统 | 备注 |
 | ------ | ------ | ------ | ------ |
@@ -132,6 +134,7 @@
 | 选择x轴列 | 下拉选择 | 根据用户所选x轴列进行处理并生成散点图，自动刷新界面 | x轴不能与y轴相同，否则会有错误提示 |
 | 选择y轴列 | 下拉选择 | 根据用户所选y轴列进行处理并生成散点图，自动刷新界面 | x轴不能与y轴相同，否则会有错误提示 |
 | 输入power次数 | 数字输入 | 根据所输入次方从散点图数据生成拟合曲线，并重叠示在散点图图上 | - |
+| 点击点 | 单击 | 右下角显示该点坐标 | - |
 #### 2.1.5 相关性与协方差矩阵界面
 根据图1中的流程，用户在本界面进行以下操作：
 1. 点击左侧菜单前往其他页面（2.1.2-2.1.8）。
@@ -213,6 +216,8 @@ Executables can be found in the `build` directory.
 #### 2.2.1 使用MXE交叉编译
 Refer to `Dockerfile` provided for instructions.
 
+MXE requires custom build in order to be able to build `xgboost` and `qtdatavis3d`, details can be seen in my fork [https://github.com/wms2537/mxe.git](https://github.com/wms2537/mxe.git).
+
 ### 2.3 可拓展性与未来增强
 目前此项目只是一个非常简单的可视化平台，没有任何其他功能。它可以成为一个模块嵌入其他系统，或者成为一个工具。但是最终也是要看目标用户的真正需求。
 
@@ -270,16 +275,16 @@ csv的格式参考[1.3 假设](#13-假设)里的。
 | 输入字段 | 类型 | 属性 | 参数 | 默认值 | 描述 | 验证 |
 | ------ | ------ | ------ | ------ | ------ | ------ | ------ |
 | type | string | mandatory | dropdown select | Covariance | 选择相关性矩阵/协方差矩阵 | - |
-| Columns | string[] | mandatory | dropdown multiselect | diagnosis;radius_mean;texture_mean;perimeter_mean;area_mean | 选择列 | - |
+| Columns | string[] | mandatory | dropdown multiselect | diagnosis;radius_mean;texture_mean; perimeter_mean;area_mean | 选择列 | - |
 #### 2.5.6 PCA降维绘制界面
 | 输入字段 | 类型 | 属性 | 参数 | 默认值 | 描述 | 验证 |
 | ------ | ------ | ------ | ------ | ------ | ------ | ------ |
-| Columns | string[] | mandatory | dropdown multiselect | radius_mean;texture_mean;perimeter_mean;area_mean | 选择列 | - |
+| Columns | string[] | mandatory | dropdown multiselect | radius_mean;texture_mean; perimeter_mean;area_mean | 选择列 | - |
 | Dims | number | mandatory | dropdown select | 2 | 选择输出维度 | - |
 #### 2.5.7 聚类分析界面
 | 输入字段 | 类型 | 属性 | 参数 | 默认值 | 描述 | 验证 |
 | ------ | ------ | ------ | ------ | ------ | ------ | ------ |
-| Cols | string[] | mandatory | dropdown multiselect | radius_mean;texture_mean;perimeter_mean;area_mean | 选择列 | - |
+| Cols | string[] | mandatory | dropdown multiselect | radius_mean;texture_mean; perimeter_mean;area_mean | 选择列 | - |
 | Algo | string | mandatory | dropdown select | 2 | 选择算法 | - |
 | num clusters | number | mandatory | spinbox | 2 | 输入聚类类数 | number |
 | Dims | number | mandatory | dropdown select | 2 | 选择输出维度 | - |
@@ -295,6 +300,7 @@ csv的格式参考[1.3 假设](#13-假设)里的。
 所有功能直接在mainwindow上完成，由于所有功能都属于同一个类别，且项目复杂度较低，没有分开不同窗口的必要，而且太多窗口会增加操作难度和状态管理难度。
 
 项目使用以下layout
+
 ![layout](media/layout.png)
 
 ### 3.2 状态管理

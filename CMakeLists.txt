@@ -13,6 +13,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(Qt6 REQUIRED COMPONENTS Widgets Charts DataVisualization)
 find_package(xgboost REQUIRED)
+
 qt_standard_project_setup()
 
 qt_add_executable(main
