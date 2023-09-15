@@ -95,6 +95,23 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
                 createClustering(); });
     connect(ui->comboBox_clustering_algorithm, &QComboBox::currentIndexChanged, this, [=](int index)
             { if(!fileLoaded) return;
+            switch (index)
+            {
+            case 0:
+                ui->spinBox_num_clusters->setDisabled(false);
+                break;
+            case 1:
+                ui->spinBox_num_clusters->setDisabled(true);
+                break;
+            case 2:
+                ui->spinBox_num_clusters->setDisabled(false);
+                break;
+            case 3:
+                ui->spinBox_num_clusters->setDisabled(true);
+                break;
+            default:
+                break;
+            }
                 createClustering(); });
     connect(ui->comboBox_clustering_dim, &QComboBox::currentIndexChanged, this, [=](int index)
             { if(!fileLoaded) return;

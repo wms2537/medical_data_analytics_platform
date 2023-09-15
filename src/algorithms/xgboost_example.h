@@ -21,53 +21,57 @@
         }                                                                                               \
     }
 
-// Function to calculate the AUC (Area Under the ROC Curve)
-inline double calculateAUC(const std::vector<float> &labels, const std::vector<float> &predictions)
-{
-    // Combine labels and predictions for sorting
-    std::vector<std::pair<int, float>> label_pred_pairs;
-    for (size_t i = 0; i < predictions.size(); ++i)
-    {
-        label_pred_pairs.emplace_back(labels[i], predictions[i]);
+inline double calculateAUC(const std::vector<float> &labels, const std::vector<float> &predictions) {
+    // Make sure labels and predictions have the same size
+    if (labels.size() != predictions.size()) {
+        std::cout << labels.size() << " vs " << predictions.size() << std::endl;
+        throw std::invalid_argument("Input vectors must have the same size");
     }
 
-    // Sort by prediction values in ascending order
-    std::sort(label_pred_pairs.begin(), label_pred_pairs.end(),
-              [](const std::pair<int, float> &a, const std::pair<int, float> &b)
-              {
-                  return a.second < b.second;
+    // Create a vector of pairs to store labels and corresponding predictions
+    std::vector<std::pair<float, float>> labelPredictionPairs;
+    for (size_t i = 0; i < labels.size(); ++i) {
+        labelPredictionPairs.push_back(std::make_pair(labels[i], predictions[i]));
+    }
+
+    // Sort the pairs in descending order of predictions
+    std::sort(labelPredictionPairs.begin(), labelPredictionPairs.end(),
+              [](const std::pair<float, float> &a, const std::pair<float, float> &b) {
+                  return a.second > b.second;
               });
 
-    // Calculate AUC using the trapezoidal rule
     double auc = 0.0;
-    double tpr = 0.0;
-    double prev_fpr = 0.0;
-    double prev_tpr = 0.0;
+    double truePositives = 0.0;
+    double falsePositives = 0.0;
+    double prevTruePositives = 0.0;
+    double prevFalsePositives = 0.0;
+    double prevPrediction = -std::numeric_limits<float>::infinity();
 
-    for (const auto &pair : label_pred_pairs)
-    {
-        if (pair.first == 1)
-        {
-            tpr += 1.0;
+    // Calculate the AUC using the trapezoidal rule
+    for (const auto &pair : labelPredictionPairs) {
+        double label = pair.first;
+        double prediction = pair.second;
+
+        if (prediction != prevPrediction) {
+            auc += ((truePositives + prevTruePositives) / 2) * (falsePositives - prevFalsePositives);
+            prevTruePositives = truePositives;
+            prevFalsePositives = falsePositives;
+            prevPrediction = prediction;
         }
-        else
-        {
-            if (tpr > 0.0)  // Avoid division by zero
-            {
-                auc += (tpr + prev_tpr) * (pair.second - prev_fpr) / 2.0;
-            }
-            prev_fpr = pair.second;
-            prev_tpr = tpr;
+
+        if (label == 1.0) {
+            truePositives += 1.0;
+        } else {
+            falsePositives += 1.0;
         }
     }
 
-    if (prev_tpr > 0.0 && prev_fpr < 1.0)  // Avoid division by zero
-    {
-        auc += (1.0 + prev_tpr) * (1.0 - prev_fpr) / 2.0;
-    }
+    // Calculate the final AUC
+    auc += ((truePositives + prevTruePositives) / 2) * (falsePositives - prevFalsePositives);
 
-    return auc;
+    return auc / (truePositives * falsePositives);
 }
+
 
 inline std::tuple<std::vector<float>, float, float, float, std::vector<float>> trainXgBoost(std::vector<std::vector<float>> input_data, std::vector<float> labels, float trainRatio, int epochs, int depth, std::function<void(int)> epochCallback)
 {
@@ -141,6 +145,7 @@ inline std::tuple<std::vector<float>, float, float, float, std::vector<float>> t
     const float *test_preds;
     bst_ulong test_preds_len;
     std::vector<float> test_preds_vector;
+    std::vector<float> test_labels;
     XGBoosterPredict(booster, test_dmatrix, 0, 0, 0, &test_preds_len, &test_preds);
     // std::cout << "Test len: " << test_preds_len <<endl;
     // Calculate accuracy
@@ -153,11 +158,12 @@ inline std::tuple<std::vector<float>, float, float, float, std::vector<float>> t
             correct_predictions++;
         }
         test_preds_vector.push_back(test_preds[i]);
+        test_labels.push_back(labels[test_row_indices[i]]);
     }
     double accuracy = static_cast<double>(correct_predictions) / test_preds_len;
 
     // Calculate AUC
-    double auc = calculateAUC(labels, test_preds_vector);
+    double auc = calculateAUC(test_labels, test_preds_vector);
 
     // Calculate F1 score
     double epsilon = 1e-15;
@@ -219,50 +225,4 @@ inline std::tuple<std::vector<float>, float, float, float, std::vector<float>> t
     XGBoosterFree(booster);
     return {test_preds_vector, accuracy, auc, f1_score, sorted_scores};
 }
-
-// void testXgboost()
-// {
-//     // Load data from memory
-//     float train[4][2] = {{1, 2}, {3, 4}, {5, 6}, {7, 8}};
-//     float label[4] = {0, 1, 0, 1};
-//     DMatrixHandle dtrain;
-//     safe_xgboost(XGDMatrixCreateFromMat((float *)train, 4, 2, -1, &dtrain));
-//     safe_xgboost(XGDMatrixSetFloatInfo(dtrain, "label", label, 4)); // set label parameter
-//     // Create booster
-//     BoosterHandle booster;
-//     safe_xgboost(XGBoosterCreate(&dtrain, 1, &booster));
-
-//     // Set parameters
-//     safe_xgboost(XGBoosterSetParam(booster, "objective", "reg:squarederror"));
-//     safe_xgboost(XGBoosterSetParam(booster, "max_depth", "3"));
-//     safe_xgboost(XGBoosterSetParam(booster, "eta", "0.1"));
-
-//     // Train for 10 iterations
-//     for (int iter = 0; iter < 2; iter++)
-//     {
-//         safe_xgboost(XGBoosterUpdateOneIter(booster, iter, dtrain));
-//     }
-
-//     // Use train data as test data
-//     DMatrixHandle dtest = dtrain;
-
-//     // Predict
-//     bst_ulong out_len;
-//     const float *out_result;
-//     safe_xgboost(XGBoosterPredict(booster, dtest, 4, 2, 0, &out_len, &out_result));
-
-//     // Print predictions
-//     for (int i = 0; i < out_len; i++)
-//     {
-//         printf("%f\n", out_result[i]);
-//     }
-
-//     safe_xgboost(XGBoosterPredict(booster, dtest, 4, 2, 1, &out_len, &out_result));
-
-//     // Print feature contributions
-//     for (int i = 0; i < out_len; i++)
-//     {
-//         printf("%f\n", out_result[i]);
-//     }
-// }
 #endif // XGBOOST_EXAMPLE_H
