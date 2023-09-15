@@ -396,33 +396,35 @@ void MainWindow::createScatter()
             continue;
         // std::cout << x << " " << y << endl;
         lineseries->append(QPointF(x, y));
-        if (lineseries->points().size() == scatter_power)
-            break;
+        // if (lineseries->points().size() == scatter_power)
+        //     break;
     }
-    float y = 0;
-    for (int j = 0; j <= scatter_power; j++)
-    {
-        y += std::get<0>(leastSqAndPR)[j] * std::pow(std::get<3>(leastSqAndPR).back(), j);
-    }
-    // std::cout << std::get<3>(leastSqAndPR).back() << " " << y << endl
-    //   << endl;
-    lineseries->append(QPointF(std::get<3>(leastSqAndPR).back(), y));
+    // float y = 0;
+    // for (int j = 0; j <= scatter_power; j++)
+    // {
+    //     y += std::get<0>(leastSqAndPR)[j] * std::pow(std::get<3>(leastSqAndPR).back(), j);
+    // }
+    // // std::cout << std::get<3>(leastSqAndPR).back() << " " << y << endl
+    // //   << endl;
+    // lineseries->append(QPointF(std::get<3>(leastSqAndPR).back(), y));
     chart->addSeries(lineseries);
 
     auto axisX = new QValueAxis;
     chart->addAxis(axisX, Qt::AlignBottom);
     series0->attachAxis(axisX);
+    lineseries->attachAxis(axisX);
     axisX->setRange(std::get<4>(leastSqAndPR), std::get<5>(leastSqAndPR));
     axisX->setTitleText(QString::fromStdString(csvReader.getHeaders()[scatterXIndex + 1]));
 
     auto axisY = new QValueAxis;
     chart->addAxis(axisY, Qt::AlignLeft);
     series0->attachAxis(axisY);
+    lineseries->attachAxis(axisY);
     axisY->setRange(std::get<6>(leastSqAndPR), std::get<7>(leastSqAndPR));
     axisY->setTitleText(QString::fromStdString(csvReader.getHeaders()[scatterYIndex + 1]));
 
-    lineseries->attachAxis(axisX);
-    lineseries->attachAxis(axisY);
+    
+    
     ui->label_scatter_p->setText(QString::fromStdString(std::to_string(std::get<1>(leastSqAndPR))));
     ui->label_scatter_r2->setText(QString::fromStdString(std::to_string(std::get<2>(leastSqAndPR))));
     chart->setDropShadowEnabled(false);

@@ -22,8 +22,8 @@ void HeatmapLegend::paintEvent(QPaintEvent *event)
 
     // Calculate gradient for the legend.
     QLinearGradient gradient(0, 0, 0, height());
-    gradient.setColorAt(0.0, legendLowColor);
-    gradient.setColorAt(1.0, legendHighColor);
+    gradient.setColorAt(1.0, legendLowColor);
+    gradient.setColorAt(0.0, legendHighColor);
 
     painter.fillRect(rect(), gradient);
 
@@ -34,8 +34,8 @@ void HeatmapLegend::paintEvent(QPaintEvent *event)
     QRectF labelRect1(1, height()-10, 28, 10);
     QRectF labelRect2(1, 1, 28, 10);
 
-    QString label1 = QString::number(max);
-    QString label2 = QString::number(min);
+    QString label1 = QString::number(min);
+    QString label2 = QString::number(max);
 
     // Draw labels
     int maxFontSize = 12; // Maximum allowed font size

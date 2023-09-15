@@ -1,13 +1,13 @@
 /********************************************************************************
-** Form generated from reading UI file 'mainwindowKcFedT.ui'
+** Form generated from reading UI file 'mainwindowKDuSBv.ui'
 **
 ** Created by: Qt User Interface Compiler version 6.5.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
 
-#ifndef MAINWINDOWKCFEDT_H
-#define MAINWINDOWKCFEDT_H
+#ifndef MAINWINDOWKDUSBV_H
+#define MAINWINDOWKDUSBV_H
 
 #include <QtCharts/QChartView>
 #include <QtCore/QVariant>
@@ -59,8 +59,9 @@ public:
     QSpacerItem *verticalSpacer;
     QStackedWidget *stackedWidget;
     QWidget *page_no_data;
-    QPushButton *pushButton_load_csv_data;
+    QVBoxLayout *verticalLayout_8;
     QLabel *label_2;
+    QPushButton *pushButton_load_csv_data;
     QWidget *page_raw_data_view;
     QVBoxLayout *verticalLayout;
     QLabel *label_7;
@@ -245,13 +246,23 @@ public:
         stackedWidget->setSizePolicy(sizePolicy2);
         page_no_data = new QWidget();
         page_no_data->setObjectName("page_no_data");
-        pushButton_load_csv_data = new QPushButton(page_no_data);
-        pushButton_load_csv_data->setObjectName("pushButton_load_csv_data");
-        pushButton_load_csv_data->setGeometry(QRect(220, 310, 161, 32));
+        verticalLayout_8 = new QVBoxLayout(page_no_data);
+        verticalLayout_8->setObjectName("verticalLayout_8");
         label_2 = new QLabel(page_no_data);
         label_2->setObjectName("label_2");
-        label_2->setGeometry(QRect(0, 200, 601, 51));
+        sizePolicy.setHeightForWidth(label_2->sizePolicy().hasHeightForWidth());
+        label_2->setSizePolicy(sizePolicy);
         label_2->setAlignment(Qt::AlignCenter);
+
+        verticalLayout_8->addWidget(label_2);
+
+        pushButton_load_csv_data = new QPushButton(page_no_data);
+        pushButton_load_csv_data->setObjectName("pushButton_load_csv_data");
+        sizePolicy.setHeightForWidth(pushButton_load_csv_data->sizePolicy().hasHeightForWidth());
+        pushButton_load_csv_data->setSizePolicy(sizePolicy);
+
+        verticalLayout_8->addWidget(pushButton_load_csv_data);
+
         stackedWidget->addWidget(page_no_data);
         page_raw_data_view = new QWidget();
         page_raw_data_view->setObjectName("page_raw_data_view");
@@ -783,7 +794,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        stackedWidget->setCurrentIndex(7);
+        stackedWidget->setCurrentIndex(0);
         comboBox_clustering_algorithm->setCurrentIndex(0);
 
 
@@ -802,8 +813,8 @@ public:
         label_menu_pca_analysis->setText(QCoreApplication::translate("MainWindow", "PCA Analysis", nullptr));
         label_menu_clustering->setText(QCoreApplication::translate("MainWindow", "Clustering", nullptr));
         label_menu_causal_analysis->setText(QCoreApplication::translate("MainWindow", "Causal Analysis", nullptr));
-        pushButton_load_csv_data->setText(QCoreApplication::translate("MainWindow", "Load CSV Data", nullptr));
         label_2->setText(QCoreApplication::translate("MainWindow", "No Data Loaded", nullptr));
+        pushButton_load_csv_data->setText(QCoreApplication::translate("MainWindow", "Load CSV Data", nullptr));
         label_7->setText(QCoreApplication::translate("MainWindow", "Raw Data View", nullptr));
         label_11->setText(QCoreApplication::translate("MainWindow", "Histogram", nullptr));
         label_8->setText(QCoreApplication::translate("MainWindow", "Column", nullptr));
@@ -873,4 +884,4 @@ namespace Ui {
 
 QT_END_NAMESPACE
 
-#endif // MAINWINDOWKCFEDT_H
+#endif // MAINWINDOWKDUSBV_H

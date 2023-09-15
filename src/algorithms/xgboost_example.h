@@ -26,7 +26,7 @@ inline double calculateAUC(const std::vector<float> &labels, const std::vector<f
 {
     // Combine labels and predictions for sorting
     std::vector<std::pair<int, float>> label_pred_pairs;
-    for (size_t i = 0; i < labels.size(); ++i)
+    for (size_t i = 0; i < predictions.size(); ++i)
     {
         label_pred_pairs.emplace_back(labels[i], predictions[i]);
     }
